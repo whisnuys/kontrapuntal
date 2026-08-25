@@ -1,0 +1,39 @@
+---
+import type { NoteEntry } from '../lib/content.ts';
+import { topicHref } from '../lib/presentation.ts';
+import HomepageStoryCard from './HomepageStoryCard.astro';
+
+interface Props {
+  topic: string;
+  notes: NoteEntry[];
+  index: number;
+}
+
+const { topic, notes, index } = Astro.props;
+const lead = notes[0];
+const supporting = notes.slice(1, 4);
+const headingId = `topic-band-${index}`;
+---
+
+<section
+  class:list={['topic-band', { 'topic-band--paper': index % 2 === 1 }]}
+  aria-labelledby={headingId}
+>
+  <header class="topic-band__heading">
+    <p class="eyebrow">Category {String(index + 1).padStart(2, '0')}</p>
+    <div>
+      <h2 id={headingId}><a href={topicHref(topic)}>{topic}</a></h2>
+      <a class="text-link" href={topicHref(topic)}>
+        More<span aria-hidden="true">→</span>
+      </a>
+    </div>
+  </header>
+  <div class="topic-band__grid">
+    {lead && <HomepageStoryCard note={lead} variant="prominent" index={0} />}
+    <div class="topic-band__supporting">
+      {supporting.map((note, noteIndex) => (
+        <HomepageStoryCard note={note} index={noteIndex + 1} />
+      ))}
+    </div>
+  </div>
+</section>

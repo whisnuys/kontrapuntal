@@ -1,0 +1,17 @@
+---
+interface Props {
+  title?: string;
+  message?: string;
+}
+
+const {
+  title = 'Nothing here yet',
+  message = 'Try a different filter or return to the complete notes index.',
+} = Astro.props;
+---
+
+<div class="empty-state" role="status">
+  <p class="eyebrow">No results</p>
+  <h2>{title}</h2>
+  <p>{message}</p>
+</div>

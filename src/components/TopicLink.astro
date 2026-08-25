@@ -1,0 +1,11 @@
+---
+import { topicHref } from '../lib/presentation.ts';
+
+interface Props {
+  topic: string;
+}
+
+const { topic } = Astro.props;
+---
+
+<a class="topic-link" href={topicHref(topic)}>{topic}</a>

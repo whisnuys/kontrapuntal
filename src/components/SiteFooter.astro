@@ -1,0 +1,29 @@
+---
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-grid__statement">
+      <a class="footer-wordmark" href="/" aria-label="Kontrapuntal, home">
+        <img class="footer-wordmark__image" src="/images/wordmark.svg" alt="" />
+        <img class="footer-wordmark__image footer-wordmark__image--hover" src="/images/wordmark-hover.svg" alt="" />
+      </a>
+      <p>Ideas sound different in counterpoint.</p>
+    </div>
+    <nav class="footer-grid__nav" aria-label="Footer navigation">
+      <a href="/notes">Notes</a>
+      <a href="/topics">Topics</a>
+      <a href="/about">About</a>
+      <a href="/feed.xml">RSS</a>
+    </nav>
+    <div class="footer-grid__colophon">
+      <p>Static by design.</p>
+      <p>No accounts. No tracking.</p>
+    </div>
+  </div>
+  <div class="footer-colophon">
+    <p>© {year} Kontrapuntal</p>
+    <p>Written in Markdown · Built with Astro</p>
+  </div>
+</footer>

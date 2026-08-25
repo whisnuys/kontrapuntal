@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kontrapuntal">
+  <rect width="64" height="64" fill="#151613"/>
+  <path fill="#ece5d8" d="M15 11h8v18l17-18h10L30 32l21 21H40L23 35v18h-8z"/>
+  <rect x="8" y="57" width="48" height="3" fill="#9b3a34"/>
+</svg>

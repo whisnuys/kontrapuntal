@@ -1,0 +1,63 @@
+---
+import EmptyState from '../components/EmptyState.astro';
+import HomepageStoryCard from '../components/HomepageStoryCard.astro';
+import LeadStory from '../components/LeadStory.astro';
+import NewsletterAnnouncement from '../components/NewsletterAnnouncement.astro';
+import PopularGrid from '../components/PopularGrid.astro';
+import TopicBand from '../components/TopicBand.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDiscoverableNotes, toNoteSummary } from '../lib/content.ts';
+import { selectHomepageContent } from '../lib/homepage.ts';
+
+const notes = await getDiscoverableNotes();
+const noteById = new Map(notes.map((note) => [note.id, note]));
+const selection = selectHomepageContent(notes.map(toNoteSummary));
+const lead = selection.leadId ? noteById.get(selection.leadId) : undefined;
+const resolveNotes = (ids: readonly string[]) =>
+  ids.flatMap((id) => {
+    const note = noteById.get(id);
+    return note ? [note] : [];
+  });
+const popular = resolveNotes(selection.popularIds);
+const latest = resolveNotes(selection.latestIds);
+const topicGroups = selection.topicGroups.map(({ topic, noteIds }) => ({
+  topic,
+  notes: resolveNotes(noteIds),
+}));
+---
+
+<BaseLayout>
+  <div data-layout="editorial-front">
+    <section class="front-lead" aria-labelledby="featured-heading">
+      <h1 class="sr-only" id="featured-heading">Kontrapuntal featured note</h1>
+      {lead ? (
+        <LeadStory note={lead} />
+      ) : (
+        <EmptyState title="The first note is still being written" />
+      )}
+    </section>
+
+    {popular.length > 0 && <PopularGrid notes={popular} />}
+
+    <section class="home-announcement">
+      <NewsletterAnnouncement />
+    </section>
+
+    <section class="homepage-latest" aria-labelledby="latest-heading">
+      <!-- <header class="homepage-section-title">
+        <h2 id="latest-heading">Latest</h2>
+      </header> -->
+      {latest.length > 0 ? (
+        <div class="homepage-story-grid">
+          {latest.map((note, index) => <HomepageStoryCard note={note} index={index} />)}
+        </div>
+      ) : (
+        <EmptyState title="The first note is still being written" />
+      )}
+    </section>
+
+    {topicGroups.map(({ topic, notes: topicNotes }, index) => (
+      <TopicBand topic={topic} notes={topicNotes} index={index} />
+    ))}
+  </div>
+</BaseLayout>

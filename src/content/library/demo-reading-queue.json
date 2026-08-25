@@ -1,0 +1,10 @@
+{
+  "title": "[Demo] The Reading Queue",
+  "type": "book",
+  "status": "current",
+  "creator": "Demonstration Author",
+  "startedAt": "2026-08-14",
+  "relatedNotes": ["demo-book-as-counterargument"],
+  "annotation": "A placeholder library entry showing a source currently in progress.",
+  "privateNotes": "PRIVATE-DEMO-LIBRARY-NOTE"
+}

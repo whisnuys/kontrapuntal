@@ -1,0 +1,27 @@
+{
+  "name": "kontrapuntal",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=24.19.0 <25"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "test": "node --test \"src/**/*.test.ts\"",
+    "build": "astro build",
+    "verify:build": "node scripts/verify-build.mjs",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.7",
+    "@astrojs/rss": "^4.0.19",
+    "astro": "^7.2.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^24.13.3",
+    "typescript": "^6.0.3"
+  }
+}

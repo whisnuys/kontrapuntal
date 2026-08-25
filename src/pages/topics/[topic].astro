@@ -1,0 +1,38 @@
+---
+import StoryCard from '../../components/StoryCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getDiscoverableNotes, type NoteEntry } from '../../lib/content.ts';
+import { formatLabel } from '../../lib/presentation.ts';
+
+export async function getStaticPaths() {
+  const notes = await getDiscoverableNotes();
+  const topics = [...new Set(notes.flatMap(({ data }) => data.topics))];
+  return topics.map((topic) => ({
+    params: { topic },
+    props: { topic, notes: notes.filter(({ data }) => data.topics.includes(topic)) },
+  }));
+}
+
+interface Props {
+  topic: string;
+  notes: NoteEntry[];
+}
+
+const { topic, notes } = Astro.props;
+---
+
+<BaseLayout title={formatLabel(topic)} description={`Published Kontrapuntal notes about ${formatLabel(topic)}.`}>
+  <div data-layout="topic-directory">
+  <header class="page-header topic-page-header">
+    <p class="eyebrow">Topic · {notes.length} {notes.length === 1 ? 'note' : 'notes'}</p>
+    <div class="page-header__grid">
+      <h1>{formatLabel(topic)}</h1>
+      <p>A chronological thread through every published note tagged with this subject.</p>
+    </div>
+  </header>
+
+  <section class="shell topic-note-list story-card-grid" aria-label={`Notes about ${topic}`}>
+    {notes.map((note, index) => <StoryCard note={note} index={index} />)}
+  </section>
+  </div>
+</BaseLayout>

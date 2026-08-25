@@ -1,0 +1,114 @@
+---
+import EmptyState from '../../components/EmptyState.astro';
+import StoryCard from '../../components/StoryCard.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getDiscoverableNotes } from '../../lib/content.ts';
+
+const notes = await getDiscoverableNotes();
+const searchableText = (note: (typeof notes)[number]) =>
+  [
+    note.data.title,
+    note.data.description,
+    note.data.source?.type,
+    note.data.source?.title,
+    note.data.source?.creator,
+    ...note.data.topics,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+---
+
+<BaseLayout title="Notes" description="Browse every published Kontrapuntal note by subject, format, topic, or phrase.">
+  <div data-layout="magazine-index">
+      <header class="page-header">
+    <p class="eyebrow">The complete index</p>
+    <div class="page-header__grid">
+      <h1>Notes</h1>
+      <p>Essays, reflections, and quick notes arranged newest first. Filter the index without losing the chronology.</p>
+    </div>
+  </header>
+
+  <section class="notes-index" aria-labelledby="notes-index-heading">
+    <h2 class="sr-only" id="notes-index-heading">Published notes</h2>
+    <div class="filter-summary" aria-live="polite">
+      <p><strong id="result-count">{notes.length}</strong> <span id="result-label">published notes</span></p>
+      <a href="/notes" id="clear-filters">Clear filters</a>
+    </div>
+
+    <div class="story-card-grid story-card-grid--index" id="notes-list">
+      {notes.map((note, index) => (
+        <div
+          data-filter-item
+          data-search={searchableText(note)}
+          data-type={note.data.contentType}
+          data-format={note.data.format}
+          data-topics={note.data.topics.join('|')}
+        >
+          <StoryCard note={note} index={index} />
+        </div>
+      ))}
+    </div>
+    <div id="filter-empty" hidden>
+      <EmptyState title="No notes match those filters" />
+    </div>
+  </section>
+  </div>
+
+  <script>
+    const form = document.querySelector<HTMLFormElement>('#note-filters');
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-filter-item]')];
+    const count = document.querySelector<HTMLElement>('#result-count');
+    const label = document.querySelector<HTMLElement>('#result-label');
+    const empty = document.querySelector<HTMLElement>('#filter-empty');
+    const clear = document.querySelector<HTMLAnchorElement>('#clear-filters');
+
+    const applyFilters = (writeUrl = true) => {
+      if (!form) return;
+      const data = new FormData(form);
+      const params = new URLSearchParams();
+      for (const [key, value] of data.entries()) params.set(key, String(value));
+      const query = (params.get('q') ?? '').trim().toLowerCase();
+      const type = params.get('type') ?? '';
+      const topic = params.get('topic') ?? '';
+      const format = params.get('format') ?? '';
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const topics = (card.dataset.topics ?? '').split('|');
+        const matches =
+          (!query || card.dataset.search?.includes(query)) &&
+          (!type || card.dataset.type === type) &&
+          (!topic || topics.includes(topic)) &&
+          (!format || card.dataset.format === format);
+        card.hidden = !matches;
+        if (matches) visible += 1;
+      });
+
+      if (count) count.textContent = String(visible);
+      if (label) label.textContent = visible === 1 ? 'published note' : 'published notes';
+      if (empty) empty.hidden = visible !== 0;
+      const hasFilters = [...params.values()].some(Boolean);
+      if (clear) clear.hidden = !hasFilters;
+
+      if (writeUrl) {
+        for (const [key, value] of [...params.entries()]) {
+          if (!value.trim()) params.delete(key);
+        }
+        const queryString = params.toString();
+        history.replaceState({}, '', queryString ? `/notes?${queryString}` : '/notes');
+      }
+    };
+
+    if (form) {
+      const initial = new URLSearchParams(location.search);
+      for (const element of form.elements) {
+        if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
+          const value = initial.get(element.name);
+          if (value !== null) element.value = value;
+        }
+      }
+      applyFilters(false);
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+import LibraryItem from '../components/LibraryItem.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getDiscoverableNotes, getLibraryEntries } from '../lib/content.ts';
+import { formatLabel, noteHref } from '../lib/presentation.ts';
+
+const library = await getLibraryEntries();
+const notes = await getDiscoverableNotes();
+const noteById = new Map(notes.map((note) => [note.id, note]));
+const statusOrder = ['current', 'want-to-consume', 'finished', 'paused', 'dropped'] as const;
+const groups = statusOrder
+  .map((status) => ({
+    status,
+    items: library
+      .filter((item) => item.data.status === status)
+      .sort((left, right) => left.data.title.localeCompare(right.data.title)),
+  }))
+  .filter(({ items }) => items.length > 0);
+---
+
+<BaseLayout title="Library" description="Books, games, video, podcasts, and articles currently informing Kontrapuntal.">
+  <div data-layout="library-directory">
+  <header class="shell page-header">
+    <p class="eyebrow">Source material</p>
+    <div class="page-header__grid">
+      <h1>Library</h1>
+      <p>A working shelf, not a recommendations list. Status and annotations describe where a source sits in the process.</p>
+    </div>
+  </header>
+
+  <div class="shell library-page">
+    {groups.map(({ status, items }) => (
+      <section class="library-section" aria-labelledby={`library-${status}`}>
+        <SectionHeader title={formatLabel(status)} kicker={`${items.length} ${items.length === 1 ? 'item' : 'items'}`} />
+        <div id={`library-${status}`} class="library-grid">
+          {items.map((item, index) => {
+            const relatedNotes = item.data.relatedNotes
+              .map((reference) => noteById.get(reference.id))
+              .filter((note) => note !== undefined);
+            return (
+              <div class="library-entry">
+                <LibraryItem item={item} numbered index={index} />
+                {relatedNotes.length > 0 && (
+                  <p class="library-entry__related">
+                    Related: {relatedNotes.map((note, noteIndex) => (
+                      <>
+                        {noteIndex > 0 && ', '}
+                        <a href={noteHref(note.id)}>{note.data.title}</a>
+                      </>
+                    ))}
+                  </p>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    ))}
+  </div>
+  </div>
+</BaseLayout>

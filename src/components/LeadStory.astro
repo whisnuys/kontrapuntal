@@ -1,0 +1,49 @@
+---
+import type { NoteEntry } from '../lib/content.ts';
+import { formatDate, formatLabel, noteHref } from '../lib/presentation.ts';
+import TopicLink from './TopicLink.astro';
+
+interface Props {
+  note: NoteEntry;
+}
+
+const { note } = Astro.props;
+---
+
+<article class="lead-story">
+  <a class="editorial-lead__media" href={noteHref(note.id)} aria-label={`Read ${note.data.title}`}>
+    {typeof note.data.heroImage === 'string' ? (
+      <img
+        src={note.data.heroImage}
+        alt={note.data.heroAlt ?? ''}
+        width="1536"
+        height="1024"
+        loading="eager"
+        fetchpriority="high"
+      />
+    ) : (
+      <span class="editorial-poster" aria-hidden="true">
+        <strong>01</strong>
+        <span>{formatLabel(note.data.contentType)}</span>
+      </span>
+    )}
+  </a>
+  <div class="editorial-lead">
+    <p class="eyebrow">Featured · {formatLabel(note.data.contentType)}</p>
+    <h1><a href={noteHref(note.id)}>{note.data.title}</a></h1>
+    <p class="lead-story__dek">{note.data.description}</p>
+    <div class="story-byline">
+      <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
+      <span aria-hidden="true">/</span>
+      <span>{formatLabel(note.data.format)}</span>
+    </div>
+    <div class="editorial-lead__footer">
+      <div class="topic-list" aria-label="Topics">
+        {note.data.topics.map((topic) => <TopicLink topic={topic} />)}
+      </div>
+      <a class="lead-story__read" href={noteHref(note.id)} aria-label={`Read ${note.data.title}`}>
+        Read note <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </div>
+</article>

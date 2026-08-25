@@ -1,0 +1,44 @@
+---
+import type { NoteEntry } from '../lib/content.ts';
+import { formatDate, formatLabel, noteHref } from '../lib/presentation.ts';
+
+interface Props {
+  note: NoteEntry;
+  index?: number;
+  variant?: 'compact' | 'prominent';
+}
+
+const { note, variant = 'compact' } = Astro.props;
+const href = noteHref(note.id);
+---
+
+<article class:list={['homepage-card', `homepage-card--${variant}`]}>
+  <a class="homepage-card__media" href={href} aria-label={`Read ${note.data.title}`}>
+    {typeof note.data.heroImage === 'string' ? (
+      <img
+        src={note.data.heroImage}
+        alt={note.data.heroAlt ?? ''}
+        width="1536"
+        height="1024"
+        loading="lazy"
+      />
+    ) : (
+      <img
+        src="/images/demo-note-placeholder.png"
+        alt=""
+        width="1536"
+        height="1024"
+        loading="lazy"
+      />
+    )}
+  </a>
+  <div class="homepage-card__body">
+    <p class="homepage-card__meta">
+      <span>{formatLabel(note.data.contentType)}</span>
+      <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
+    </p>
+    <h3><a href={href}>{note.data.title}</a></h3>
+    <p class="homepage-card__dek">{note.data.description}</p>
+    <a class="homepage-card__read" href={href}>Read <span aria-hidden="true">↗</span></a>
+  </div>
+</article>

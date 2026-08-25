@@ -1,0 +1,9 @@
+{
+  "title": "[Demo] The Listening List",
+  "type": "podcast",
+  "status": "finished",
+  "creator": "Demonstration Host",
+  "finishedAt": "2026-08-12",
+  "relatedNotes": ["demo-listening-for-the-cut"],
+  "annotation": "A placeholder audio source for the library view."
+}

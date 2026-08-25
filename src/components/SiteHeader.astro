@@ -1,0 +1,280 @@
+---
+import { getDiscoverableNotes, toNoteSummary } from '../lib/content.ts';
+import { CONTENT_TYPES, NOTE_FORMATS } from '../lib/content-policy.ts';
+import { selectNavigationTopics } from '../lib/navigation.ts';
+import { formatLabel, topicHref } from '../lib/presentation.ts';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+const primaryNavigation = [
+  { href: '/', label: 'Home' },
+  { href: '/notes', label: 'Notes' },
+  { href: '/topics', label: 'Topics' },
+  { href: '/about', label: 'About' },
+];
+const notes = await getDiscoverableNotes();
+const navigationTopics = selectNavigationTopics(notes.map(toNoteSummary));
+const isHomepage = currentPath === '/';
+const isCurrent = (href: string) =>
+  href === '/' ? currentPath === href : currentPath === href || currentPath.startsWith(`${href}/`);
+const isCurrentTopic = (topic: string) => currentPath === topicHref(topic);
+---
+
+{isHomepage && (
+  <nav
+    class="header-topic-nav"
+    aria-label="Popular and featured topics"
+    style={`--header-topic-count: ${navigationTopics.featured.length + 1}`}
+  >
+    <a href="/#popular" aria-current="page">Popular</a>
+    {navigationTopics.featured.map((topic) => (
+      <a href={topicHref(topic)} aria-current={isCurrentTopic(topic) ? 'page' : undefined}>
+        {formatLabel(topic)}
+      </a>
+    ))}
+  </nav>
+)}
+
+<div class="header-utility-sentinel" aria-hidden="true"></div>
+<div class="header-utility">
+  <a class="header-utility__mark" href="/" aria-label="Kontrapuntal, home">
+    <img class="header-utility__mark-logo" src="/images/logo-kp.svg" alt="" />
+    <img class="header-utility__mark-logo header-utility__mark-logo--hover" src="/images/logo-kp-hover.svg" alt="" />
+  </a>
+  <div class="header-utility__actions">
+    <button
+      class="notes-filter-trigger"
+      type="button"
+      aria-label="Search and filter notes"
+      aria-controls="notes-filter-dialog"
+      aria-haspopup="dialog"
+      aria-expanded="false"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.5"></circle>
+        <path d="m16 16 4.25 4.25"></path>
+      </svg>
+    </button>
+    <a href="/feed.xml">RSS <span aria-hidden="true">↗</span></a>
+    <button
+      class="site-menu-trigger"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-controls="site-menu"
+      aria-expanded="false"
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+</div>
+
+<dialog class="site-menu" id="site-menu" aria-labelledby="site-menu-heading">
+  <div class="site-menu__panel">
+    <div class="site-menu__header">
+      <p class="eyebrow">Kontrapuntal</p>
+      <button class="site-menu-close" type="button" aria-label="Close navigation menu">
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+
+    <nav class="site-menu__primary" aria-labelledby="site-menu-heading">
+      <h2 class="sr-only" id="site-menu-heading">Site navigation</h2>
+      {primaryNavigation.map(({ href, label }) => (
+        <a href={href} aria-current={isCurrent(href) ? 'page' : undefined}>{label}</a>
+      ))}
+    </nav>
+
+    <nav class="site-menu__topics" aria-labelledby="site-menu-topics-heading">
+      <h2 class="eyebrow" id="site-menu-topics-heading">All topics</h2>
+      <div>
+        {navigationTopics.all.map((topic) => (
+          <a href={topicHref(topic)} aria-current={isCurrentTopic(topic) ? 'page' : undefined}>
+            {formatLabel(topic)}
+          </a>
+        ))}
+      </div>
+    </nav>
+
+    <div class="site-menu__footer">
+      <a href="/feed.xml">RSS feed <span aria-hidden="true">↗</span></a>
+      <p>Notes in counterpoint.</p>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="notes-filter-dialog" id="notes-filter-dialog" aria-labelledby="notes-filter-heading">
+  <div class="notes-filter-dialog__panel">
+    <header class="notes-filter-dialog__header">
+      <div>
+        <p class="eyebrow">Search the archive</p>
+        <h2 id="notes-filter-heading">Find a note</h2>
+      </div>
+      <button class="notes-filter-dialog__close" type="button" aria-label="Close note filters">
+        <span aria-hidden="true">×</span>
+      </button>
+    </header>
+
+    <form class="note-filters" id="note-filters" action="/notes" method="get">
+      <label class="filter-field filter-field--search">
+        <span>Search</span>
+        <input type="search" name="q" placeholder="Title, topic, or source" autocomplete="off" />
+      </label>
+      <label class="filter-field">
+        <span>Subject</span>
+        <select name="type">
+          <option value="">All subjects</option>
+          {CONTENT_TYPES.map((type) => <option value={type}>{formatLabel(type)}</option>)}
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Topic</span>
+        <select name="topic">
+          <option value="">All topics</option>
+          {navigationTopics.all.map((topic) => <option value={topic}>{formatLabel(topic)}</option>)}
+        </select>
+      </label>
+      <label class="filter-field">
+        <span>Format</span>
+        <select name="format">
+          <option value="">All formats</option>
+          {NOTE_FORMATS.map((format) => <option value={format}>{formatLabel(format)}</option>)}
+        </select>
+      </label>
+      <div class="note-filter-actions">
+        <button class="filter-clear" id="clear-note-filters" type="button">Clear</button>
+        <button class="filter-submit" type="submit">Apply filters</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+{isHomepage && (
+  <header class="site-header">
+    <div class="masthead">
+      <a class="masthead-wordmark" href="/" aria-label="Kontrapuntal, home">
+        <img class="masthead-wordmark__image" src="/images/wordmark.svg" alt="" />
+        <img class="masthead-wordmark__image masthead-wordmark__image--hover" src="/images/wordmark-hover.svg" alt="" />
+      </a>
+    </div>
+  </header>
+)}
+
+<button class="scroll-to-top" type="button" aria-label="Scroll to the top" hidden>
+  <span aria-hidden="true">↑</span>
+</button>
+
+<script>
+  const menu = document.querySelector<HTMLDialogElement>('#site-menu');
+  const trigger = document.querySelector<HTMLButtonElement>('.site-menu-trigger');
+  const closeButton = menu?.querySelector<HTMLButtonElement>('.site-menu-close');
+  const utilityRow = document.querySelector<HTMLElement>('.header-utility');
+  const stickySentinel = document.querySelector<HTMLElement>('.header-utility-sentinel');
+  const scrollToTopButton = document.querySelector<HTMLButtonElement>('.scroll-to-top');
+  const notesFilterDialog = document.querySelector<HTMLDialogElement>('#notes-filter-dialog');
+  const notesFilterTrigger = document.querySelector<HTMLButtonElement>('.notes-filter-trigger');
+  const notesFilterClose = notesFilterDialog?.querySelector<HTMLButtonElement>('.notes-filter-dialog__close');
+  const notesFilterForm = document.querySelector<HTMLFormElement>('#note-filters');
+  const notesFilterClear = document.querySelector<HTMLButtonElement>('#clear-note-filters');
+  const notesSearchField = notesFilterForm?.querySelector<HTMLInputElement>('input[name="q"]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let drawerCloseTimer: number | undefined;
+
+  if (utilityRow && stickySentinel && 'IntersectionObserver' in window) {
+    const stickyObserver = new IntersectionObserver(([entry]) => {
+      const isStuck = !entry.isIntersecting && entry.boundingClientRect.top < 0;
+      utilityRow.classList.toggle('is-stuck', isStuck);
+    });
+
+    stickyObserver.observe(stickySentinel);
+  }
+
+  if (menu && trigger && closeButton) {
+    const openMenu = () => {
+      if (drawerCloseTimer) window.clearTimeout(drawerCloseTimer);
+      menu.classList.remove('is-closing');
+      menu.showModal();
+      trigger.setAttribute('aria-expanded', 'true');
+      trigger.classList.add('is-open');
+    };
+
+    const finishClosingMenu = () => {
+      menu.close();
+      drawerCloseTimer = undefined;
+    };
+
+    const closeMenu = () => {
+      if (!menu.open || menu.classList.contains('is-closing')) return;
+      if (reducedMotion.matches) {
+        finishClosingMenu();
+        return;
+      }
+
+      menu.classList.add('is-closing');
+      drawerCloseTimer = window.setTimeout(finishClosingMenu, 180);
+    };
+
+    trigger.addEventListener('click', openMenu);
+    closeButton.addEventListener('click', closeMenu);
+    menu.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      closeMenu();
+    });
+    menu.addEventListener('click', (event) => {
+      if (event.target === menu) closeMenu();
+    });
+    menu.addEventListener('close', () => {
+      if (drawerCloseTimer) window.clearTimeout(drawerCloseTimer);
+      drawerCloseTimer = undefined;
+      menu.classList.remove('is-closing');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.classList.remove('is-open');
+      trigger.focus();
+    });
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  }
+
+  if (notesFilterDialog && notesFilterTrigger && notesFilterClose) {
+    notesFilterTrigger.addEventListener('click', () => {
+      notesFilterDialog.showModal();
+      notesFilterTrigger.setAttribute('aria-expanded', 'true');
+      window.requestAnimationFrame(() => notesSearchField?.focus());
+    });
+    notesFilterClose.addEventListener('click', () => notesFilterDialog.close());
+    notesFilterDialog.addEventListener('click', (event) => {
+      if (event.target === notesFilterDialog) notesFilterDialog.close();
+    });
+    notesFilterDialog.addEventListener('close', () => {
+      notesFilterTrigger.setAttribute('aria-expanded', 'false');
+      notesFilterTrigger.focus();
+    });
+  }
+
+  notesFilterClear?.addEventListener('click', () => notesFilterForm?.reset());
+  notesFilterForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const params = new URLSearchParams();
+    for (const [key, value] of new FormData(notesFilterForm).entries()) {
+      const normalized = String(value).trim();
+      if (normalized) params.set(key, normalized);
+    }
+    const queryString = params.toString();
+    window.location.assign(queryString ? `/notes?${queryString}` : '/notes');
+  });
+
+  if (scrollToTopButton) {
+    const updateScrollToTopVisibility = () => {
+      scrollToTopButton.hidden = window.scrollY <= window.innerHeight * 0.75;
+    };
+
+    updateScrollToTopVisibility();
+    window.addEventListener('scroll', updateScrollToTopVisibility, { passive: true });
+    scrollToTopButton.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    });
+  }
+</script>

@@ -1,0 +1,27 @@
+---
+import type { NoteEntry } from '../lib/content.ts';
+import { formatDate, formatLabel, noteHref } from '../lib/presentation.ts';
+import TopicLink from './TopicLink.astro';
+
+interface Props {
+  note: NoteEntry;
+  compact?: boolean;
+}
+
+const { note, compact = false } = Astro.props;
+---
+
+<article class:list={['story-row', { 'story-row--compact': compact }]} data-note-card>
+  <div class="story-row__meta">
+    <span>{formatLabel(note.data.contentType)}</span>
+    <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
+  </div>
+  <div class="story-row__body">
+    <h3><a href={noteHref(note.id)}>{note.data.title}</a></h3>
+    {!compact && <p>{note.data.description}</p>}
+    <div class="topic-list" aria-label="Topics">
+      {note.data.topics.slice(0, compact ? 1 : 3).map((topic) => <TopicLink topic={topic} />)}
+    </div>
+  </div>
+  <span class="story-row__arrow" aria-hidden="true">↗</span>
+</article>

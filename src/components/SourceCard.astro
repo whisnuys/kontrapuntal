@@ -1,0 +1,17 @@
+---
+import type { NoteEntry } from '../lib/content.ts';
+import { formatLabel } from '../lib/presentation.ts';
+
+interface Props {
+  source: NonNullable<NoteEntry['data']['source']>;
+}
+
+const { source } = Astro.props;
+---
+
+<aside class="source-card" aria-labelledby="source-heading">
+  <p class="eyebrow" id="source-heading">Source · {formatLabel(source.type)}</p>
+  <p class="source-card__title">{source.title}</p>
+  {source.creator && <p>{source.creator}</p>}
+  {source.url && <a class="text-link" href={source.url} rel="noreferrer">Visit source <span aria-hidden="true">↗</span></a>}
+</aside>

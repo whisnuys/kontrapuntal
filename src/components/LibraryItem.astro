@@ -1,0 +1,26 @@
+---
+import type { LibraryEntry } from '../lib/content.ts';
+import { formatLabel } from '../lib/presentation.ts';
+
+interface Props {
+  item: LibraryEntry;
+  numbered?: boolean;
+  index?: number;
+}
+
+const { item, numbered = false, index = 0 } = Astro.props;
+---
+
+<article class="library-item">
+  {numbered && <span class="library-item__number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>}
+  <div>
+    <p class="eyebrow">{formatLabel(item.data.type)} · {formatLabel(item.data.status)}</p>
+    <h3>
+      {item.data.externalUrl ? (
+        <a href={item.data.externalUrl} rel="noreferrer">{item.data.title} <span class="sr-only">(external link)</span></a>
+      ) : item.data.title}
+    </h3>
+    {item.data.creator && <p class="library-item__creator">by {item.data.creator}</p>}
+    {item.data.annotation && <p>{item.data.annotation}</p>}
+  </div>
+</article>

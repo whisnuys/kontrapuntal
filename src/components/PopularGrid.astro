@@ -1,0 +1,17 @@
+---
+import type { NoteEntry } from '../lib/content.ts';
+import HomepageStoryCard from './HomepageStoryCard.astro';
+
+interface Props {
+  notes: NoteEntry[];
+}
+
+const { notes } = Astro.props;
+---
+
+<section class="homepage-popular" id="popular" aria-labelledby="popular-heading">
+  <h2 class="sr-only" id="popular-heading">Popular posts</h2>
+  <div class="homepage-story-grid">
+    {notes.map((note, index) => <HomepageStoryCard note={note} index={index} />)}
+  </div>
+</section>

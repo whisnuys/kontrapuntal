@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About" description="Why Kontrapuntal exists and how this independent publication is made.">
+  <div data-layout="editorial-about">
+  <header class="page-header">
+    <p class="eyebrow">A note from the editor</p>
+    <div class="page-header__grid">
+      <h1>About</h1>
+      <p>Kontrapuntal is a single-author publication for ideas still being tested against other ideas.</p>
+    </div>
+  </header>
+
+  <article class="reading-width about-body article-body">
+    <h2>Why counterpoint?</h2>
+    <p>The name comes from music: independent lines that keep their own shape while changing what the others mean. That is the editorial ambition here. A book can answer a game; a technical decision can expose a cultural assumption; a quick note can complicate a longer essay.</p>
+
+    <p>This is a record of thinking in progress, not a claim to final authority. Posts distinguish observation, interpretation, and sourced factual claims. When uncertainty matters, it stays visible.</p>
+
+    <h2>What appears here</h2>
+    <p>Kontrapuntal publishes essays, reflections, and quick notes prompted by reading, watching, playing, building, learning, and ordinary work. The Library records source material separately so an item can remain useful even before it becomes a published note.</p>
+
+    <h2>How it is made</h2>
+    <p>The publication is written in Markdown and built as static HTML with Astro. There is no database, account system, or advertising tracker in V1. Git keeps the editorial record, and RSS offers the simplest way to follow new writing.</p>
+
+    <p>Publishing in English is also part of the practice: a way to make ideas clearer without sanding away the author’s natural voice.</p>
+
+    <div class="about-actions">
+      <a class="button-link" href="/feed.xml">Follow via RSS</a>
+      <a class="text-link" href="https://whisnuys.com" rel="me">Visit the author’s main site <span aria-hidden="true">↗</span></a>
+    </div>
+  </article>
+  </div>
+</BaseLayout>

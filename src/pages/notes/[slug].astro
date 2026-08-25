@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+
+import SectionHeader from '../../components/SectionHeader.astro';
+import SourceCard from '../../components/SourceCard.astro';
+import StoryRow from '../../components/StoryRow.astro';
+import TopicLink from '../../components/TopicLink.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getDiscoverableNotes, getRoutableNotes, toNoteSummary, type NoteEntry } from '../../lib/content.ts';
+import { estimateReadingMinutes, rankRelatedNotes } from '../../lib/content-policy.ts';
+import { formatDate, formatLabel } from '../../lib/presentation.ts';
+
+export async function getStaticPaths() {
+  const notes = await getRoutableNotes();
+  return notes.map((note) => ({ params: { slug: note.id }, props: { note } }));
+}
+
+interface Props {
+  note: NoteEntry;
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const readingMinutes = estimateReadingMinutes(note.body ?? '');
+const allPublished = await getDiscoverableNotes();
+const related = rankRelatedNotes(toNoteSummary(note), allPublished.map(toNoteSummary), 3).flatMap(
+  ({ id }) => {
+    const entry = allPublished.find((candidate) => candidate.id === id);
+    return entry ? [entry] : [];
+  },
+);
+const isArchived = note.data.status === 'archived';
+const heroImage = note.data.heroImage;
+const imagePath = typeof heroImage === 'string' ? heroImage : undefined;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: note.data.title,
+  description: note.data.description,
+  datePublished: note.data.publishedAt.toISOString(),
+  dateModified: (note.data.updatedAt ?? note.data.publishedAt).toISOString(),
+  mainEntityOfPage: new URL(`/notes/${note.id}`, Astro.site).href,
+  publisher: { '@type': 'Organization', name: 'Kontrapuntal', url: Astro.site?.href },
+  keywords: note.data.topics.join(', '),
+};
+---
+
+<BaseLayout
+  title={note.data.title}
+  description={note.data.description}
+  image={imagePath}
+  noindex={isArchived}
+  type="article"
+  publishedAt={note.data.publishedAt}
+  updatedAt={note.data.updatedAt}
+>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} slot="head" />
+
+  {isArchived && (
+    <aside class="archive-banner" aria-label="Archived note">
+      <div class="shell">
+        <strong>Archived</strong>
+        <p>This note remains available at its stable URL but is no longer part of the active publication index.</p>
+      </div>
+    </aside>
+  )}
+
+  <article class="article" data-layout="article-reading">
+    <header class="shell article-header">
+      <p class="eyebrow">{formatLabel(note.data.contentType)} · {formatLabel(note.data.format)}</p>
+      <h1>{note.data.title}</h1>
+      <p class="article-dek">{note.data.description}</p>
+      <div class="article-meta">
+        <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
+        {note.data.updatedAt && <span>Updated {formatDate(note.data.updatedAt)}</span>}
+        <span>{readingMinutes || 1} min read</span>
+        <button type="button" class="copy-link" data-copy-link>Copy link</button>
+      </div>
+      <div class="topic-list" aria-label="Topics">
+        {note.data.topics.map((topic) => <TopicLink topic={topic} />)}
+      </div>
+    </header>
+
+    {heroImage && (
+      <figure class="shell article-hero">
+        {typeof heroImage === 'string' ? (
+          <img src={heroImage} alt={note.data.heroAlt ?? ''} width="1344" height="756" />
+        ) : (
+          <Image src={heroImage} alt={note.data.heroAlt ?? ''} widths={[640, 960, 1344]} sizes="(max-width: 84rem) 100vw, 84rem" />
+        )}
+      </figure>
+    )}
+
+    <div class="reading-width article-body">
+      <Content />
+      {note.data.source && <SourceCard source={note.data.source} />}
+    </div>
+  </article>
+
+  {related.length > 0 && (
+    <aside class="shell related-notes" aria-labelledby="related-heading">
+      <SectionHeader title="Continue reading" kicker="Related notes" />
+      <div id="related-heading">
+        {related.map((relatedNote) => <StoryRow note={relatedNote} compact />)}
+      </div>
+    </aside>
+  )}
+
+  <script>
+    const copyButton = document.querySelector<HTMLButtonElement>('[data-copy-link]');
+    copyButton?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(location.href);
+        copyButton.textContent = 'Copied';
+      } catch {
+        copyButton.textContent = 'Copy failed';
+      }
+    });
+  </script>
+</BaseLayout>
