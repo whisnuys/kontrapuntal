@@ -242,6 +242,11 @@ if (existsSync(join(rootPath, 'index.html'))) {
       'Mobile homepage card metadata does not use the compact font size.',
     );
     assert(
+      stylesheet.includes('.editorial-lead h1{font-size:clamp(2.25rem,11vw,4.25rem)') &&
+        stylesheet.includes('.topic-band__grid>.homepage-card--prominent h3{font-size:clamp(1.45rem,7vw,2rem)'),
+      'Mobile lead titles must be smaller than the desktop scale while remaining larger than supporting card titles.',
+    );
+    assert(
       stylesheet.includes('.site-frame{width:100%;min-width:0'),
       'Mobile layout is missing the full-width site frame guard.',
     );
