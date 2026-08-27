@@ -109,13 +109,16 @@ if (existsSync(join(rootPath, 'index.html'))) {
     ),
   ];
 
-  assert(topicBands.length > 0, 'Homepage is missing its topic/category bands.');
+  assert(topicBands.length === 8, `Homepage has ${topicBands.length} topic/category bands; expected 8.`);
   for (const [index, topicBand] of topicBands.entries()) {
     const storyCount = (topicBand[1].match(/<article\b/g) ?? []).length;
     assert(
-      storyCount >= 3,
-      `Homepage topic/category band ${index + 1} has ${storyCount} stories; expected at least 3.`,
+      storyCount === 3,
+      `Homepage topic/category band ${index + 1} has ${storyCount} stories; expected exactly 3.`,
     );
+  }
+  for (const color of ['#8B362F', '#FDCDAD', '#C9C9C9', '#6D4540', '#9BADA2', '#8F8F8F', '#C85A51', '#DBCD9F']) {
+    assert(homepage.includes(color), `Homepage topic bands are missing the approved ${color} background.`);
   }
 
   const homepageCards = [...homepage.matchAll(/<article class="homepage-card[^"]*">([\s\S]*?)<\/article>/g)];
@@ -245,6 +248,33 @@ if (existsSync(join(rootPath, 'index.html'))) {
       stylesheet.includes('.editorial-lead h1{font-size:clamp(2.25rem,11vw,4.25rem)') &&
         stylesheet.includes('.topic-band__grid>.homepage-card--prominent h3{font-size:clamp(1.45rem,7vw,2rem)'),
       'Mobile lead titles must be smaller than the desktop scale while remaining larger than supporting card titles.',
+    );
+    const tabletMediaStart = stylesheet.indexOf('@media (width>=48.01rem) and (width<=64rem){');
+    const mobileMediaStart = stylesheet.indexOf('@media (width<=48rem){');
+    const tabletMedia = stylesheet.slice(
+      tabletMediaStart,
+      mobileMediaStart > tabletMediaStart ? mobileMediaStart : undefined,
+    );
+    assert(
+      tabletMedia.includes('.editorial-lead h1{font-size:clamp(2.75rem,7vw,4.75rem)') &&
+        tabletMedia.includes('.topic-band__grid>.homepage-card--prominent h3{font-size:clamp(2.2rem,3.5vw,3.4rem)') &&
+        tabletMedia.includes('.topic-band__supporting .homepage-card h3{font-size:clamp(1.35rem,2.2vw,2.1rem)'),
+      'Tablet lead titles must use the compact lead scale while remaining larger than supporting card titles.',
+    );
+    assert(
+      stylesheet.includes('.homepage-card h3{') && stylesheet.includes('overflow-wrap:anywhere'),
+      'Homepage card titles must wrap long words at every viewport size.',
+    );
+    const topicHeadingRule = stylesheet.match(/\.topic-band__heading\{([^}]*)\}/)?.[1] ?? '';
+    assert(
+      topicHeadingRule.includes('background:var(--ink)') &&
+        topicHeadingRule.includes('color:var(--paper)') &&
+        topicHeadingRule.includes('border-bottom:var(--space-3) solid var(--topic-band-bg)'),
+      'Topic bands must render a dark title panel followed by a topic-color divider strip.',
+    );
+    assert(
+      /@media \(width<=48rem\)\{[^}]*\}[^@]*\.topic-band\{padding:0/.test(stylesheet),
+      'Mobile topic bands must not add a topic-color strip above the title panel.',
     );
     assert(
       stylesheet.includes('.site-frame{width:100%;min-width:0'),

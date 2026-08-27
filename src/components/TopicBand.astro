@@ -1,5 +1,6 @@
 ---
 import type { NoteEntry } from '../lib/content.ts';
+import { getHomepageTopicPalette } from '../lib/homepage.ts';
 import { topicHref } from '../lib/presentation.ts';
 import HomepageStoryCard from './HomepageStoryCard.astro';
 
@@ -13,10 +14,14 @@ const { topic, notes, index } = Astro.props;
 const lead = notes[0];
 const supporting = notes.slice(1, 4);
 const headingId = `topic-band-${index}`;
+const palette = getHomepageTopicPalette(topic);
+const topicStyle = `--topic-band-bg: ${palette?.background ?? '#20211D'}; --topic-band-ink: ${palette?.foreground ?? '#ECE5D8'};`;
 ---
 
 <section
-  class:list={['topic-band', { 'topic-band--paper': index % 2 === 1 }]}
+  class="topic-band"
+  data-topic={topic}
+  style={topicStyle}
   aria-labelledby={headingId}
 >
   <header class="topic-band__heading">

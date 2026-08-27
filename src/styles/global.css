@@ -856,6 +856,7 @@ select {
   margin-bottom: var(--space-2);
   font-size: clamp(1.65rem, 1.25rem + 1.1vw, 2.65rem);
   letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
 }
 
 .homepage-card h3 a,
@@ -911,30 +912,32 @@ select {
 }
 
 .topic-band {
-  /*margin-top: var(--space-5);*/
-  /*padding: var(--space-4) max(0.625rem, calc((100% - 100rem) / 2 + 0.625rem));*/
-  background: var(--surface);
-}
-
-.topic-band--paper {
-  background: var(--paper);
-  color: var(--ink);
+  --topic-band-rule: color-mix(in srgb, var(--topic-band-ink) 28%, var(--topic-band-bg));
+  background: var(--topic-band-bg, var(--surface));
+  color: var(--topic-band-ink, var(--paper));
 }
 
 .topic-band__heading {
   padding-bottom: var(--space-3);
   padding: var(--space-4) max(var(--space-3), calc((100% - min(100% - 1.25rem, 100rem)) / 2));
+  border-bottom: var(--space-3) solid var(--topic-band-bg);
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .topic-band__heading .eyebrow {
   margin-bottom: var(--space-2);
 }
 
+.topic-band__heading a {
+  color: inherit;
+}
+
 .topic-band__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   border-top: 2px solid currentColor;
-  border-left: 1px solid var(--rule);
+  border-left: 1px solid var(--topic-band-rule);
 }
 
 .topic-band__supporting {
@@ -954,9 +957,19 @@ select {
   font-size: clamp(2.2rem, 2rem + 2vw, 4.6rem);
 }
 
-.topic-band--paper .homepage-card__meta,
-.topic-band--paper .homepage-card__dek {
-  color: color-mix(in srgb, var(--ink) 68%, var(--paper));
+.topic-band .homepage-card,
+.topic-band .homepage-card__media {
+  border-color: var(--topic-band-rule);
+}
+
+.topic-band .eyebrow,
+.topic-band .homepage-card__meta,
+.topic-band .homepage-card__dek {
+  color: color-mix(in srgb, var(--topic-band-ink) 72%, var(--topic-band-bg));
+}
+
+.topic-band .topic-band__heading .eyebrow {
+  color: color-mix(in srgb, var(--paper) 72%, var(--ink));
 }
 
 .story-card-grid {
@@ -1796,6 +1809,24 @@ select {
   }
 }
 
+@media (min-width: 48.01rem) and (max-width: 64rem) {
+  .editorial-lead h1 {
+    font-size: clamp(2.75rem, 7vw, 4.75rem);
+  }
+
+  .topic-band__grid > .homepage-card--prominent h3 {
+    font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+  }
+
+  .topic-band__heading {
+    border-bottom-width: 0.75rem;
+  }
+
+  .topic-band__supporting .homepage-card h3 {
+    font-size: clamp(1.35rem, 2.2vw, 2.1rem);
+  }
+}
+
 @media (max-width: 48rem) {
   :root {
     --shell: 100%;
@@ -2021,11 +2052,12 @@ select {
   }
 
   .topic-band {
-    padding: var(--space-4) 0 0;
+    padding: 0;
   }
 
   .topic-band__heading {
     padding-inline: 1rem;
+    border-bottom-width: 0.75rem;
   }
 
   .topic-band__heading > div {

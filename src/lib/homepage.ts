@@ -5,6 +5,21 @@ import {
   type NoteSummary,
 } from './content-policy.ts';
 
+export const HOMEPAGE_TOPIC_PALETTE = [
+  { topic: 'attention', background: '#8B362F', foreground: '#ECE5D8' },
+  { topic: 'craft', background: '#FDCDAD', foreground: '#151613' },
+  { topic: 'learning', background: '#C9C9C9', foreground: '#151613' },
+  { topic: 'media', background: '#6D4540', foreground: '#ECE5D8' },
+  { topic: 'books', background: '#9BADA2', foreground: '#151613' },
+  { topic: 'games', background: '#8F8F8F', foreground: '#151613' },
+  { topic: 'society', background: '#C85A51', foreground: '#151613' },
+  { topic: 'technology', background: '#DBCD9F', foreground: '#151613' },
+] as const;
+
+export function getHomepageTopicPalette(topic: string) {
+  return HOMEPAGE_TOPIC_PALETTE.find((item) => item.topic === topic);
+}
+
 export interface HomepageTopicGroup {
   topic: string;
   noteIds: string[];
@@ -30,15 +45,10 @@ export function selectHomepageContent(notes: readonly NoteSummary[]): HomepageSe
     }
   }
 
-  const topicGroups = [...topics]
-    .map(([topic, noteIds]) => ({ topic, noteIds }))
-    .filter(({ noteIds }) => noteIds.length >= 2)
-    .sort(
-      (left, right) =>
-        right.noteIds.length - left.noteIds.length || left.topic.localeCompare(right.topic),
-    )
-    .slice(0, 3)
-    .map(({ topic, noteIds }) => ({ topic, noteIds: noteIds.slice(0, 4) }));
+  const topicGroups = HOMEPAGE_TOPIC_PALETTE.flatMap(({ topic }) => {
+    const noteIds = topics.get(topic) ?? [];
+    return noteIds.length >= 3 ? [{ topic, noteIds: noteIds.slice(0, 3) }] : [];
+  });
 
   return {
     leadId,

@@ -49,9 +49,7 @@ describe('selectHomepageContent', () => {
       'older-feature',
     ]);
     assert.deepEqual(result.topicGroups, [
-      { topic: 'technology', noteIds: ['newest', 'third', 'fourth', 'older-feature'] },
-      { topic: 'books', noteIds: ['second', 'third'] },
-      { topic: 'culture', noteIds: ['newest', 'second'] },
+      { topic: 'technology', noteIds: ['newest', 'third', 'fourth'] },
     ]);
     assert.deepEqual(input.map(({ id }) => id), originalIds);
   });
@@ -71,15 +69,26 @@ describe('selectHomepageContent', () => {
     });
   });
 
-  test('ranks topic bands by full note count before limiting their cards', () => {
-    const notes = [
-      ...Array.from({ length: 5 }, (_, index) => note(`z-${index}`, index, ['z-topic'])),
-      ...Array.from({ length: 4 }, (_, index) => note(`a-${index}`, index + 5, ['a-topic'])),
+  test('returns all eight homepage topics in editorial order with three cards each', () => {
+    const topics = [
+      'attention',
+      'craft',
+      'learning',
+      'media',
+      'books',
+      'games',
+      'society',
+      'technology',
     ];
+    const notes = topics.flatMap((topic, topicIndex) =>
+      Array.from({ length: 3 }, (_, noteIndex) =>
+        note(`${topic}-${noteIndex}`, topicIndex * 3 + noteIndex, [topic]),
+      ),
+    );
 
     const result = selectHomepageContent(notes);
 
-    assert.equal(result.topicGroups[0]?.topic, 'z-topic');
-    assert.equal(result.topicGroups[0]?.noteIds.length, 4);
+    assert.deepEqual(result.topicGroups.map(({ topic }) => topic), topics);
+    assert.ok(result.topicGroups.every(({ noteIds }) => noteIds.length === 3));
   });
 });
