@@ -584,6 +584,17 @@ select {
   text-transform: uppercase;
 }
 
+.homepage-card__read span,
+.topic-band__heading .text-link span {
+  display: inline-block;
+  transition: transform 180ms ease-out;
+}
+
+.homepage-card__read:is(:hover, :focus-visible) span,
+.topic-band__heading .text-link:is(:hover, :focus-visible) span {
+  transform: translateX(0.2em);
+}
+
 .section-heading {
   display: flex;
   align-items: end;
@@ -658,6 +669,17 @@ select {
 .thread-block h3 a,
 .library-item h3 a {
   text-decoration: none;
+}
+
+.editorial-lead h1 a:hover,
+.homepage-card h3 a:hover,
+.story-card h3 a:hover,
+.story-row h3 a:hover,
+.thread-block h3 a:hover,
+.library-item h3 a:hover {
+  color: var(--ink);
+  background-color: var(--paper);
+  text-decoration-color: currentColor;
 }
 
 .lead-story__dek {
@@ -785,6 +807,8 @@ select {
 }
 
 .homepage-card {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   border-right: 1px solid var(--rule);
   border-bottom: 1px solid var(--rule);
@@ -836,6 +860,7 @@ select {
 .homepage-card__body {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 17rem;
   padding: var(--space-3);
 }
@@ -933,6 +958,10 @@ select {
   color: inherit;
 }
 
+.topic-band__heading h2 a:hover {
+  color: #c85a51;
+}
+
 .topic-band__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -970,6 +999,26 @@ select {
 
 .topic-band .topic-band__heading .eyebrow {
   color: color-mix(in srgb, var(--paper) 72%, var(--ink));
+}
+
+.topic-band__grid a:hover {
+  color: var(--topic-band-ink);
+  text-decoration-color: currentColor;
+}
+
+.topic-band__grid .homepage-card h3 a:hover {
+  color: var(--topic-band-bg);
+  background-color: var(--topic-band-ink);
+  text-decoration-color: currentColor;
+}
+
+.topic-band__grid a:focus-visible {
+  outline-color: var(--topic-band-ink);
+}
+
+.homepage-card__read:is(:hover, :focus-visible) {
+  color: inherit;
+  background-color: transparent;
 }
 
 .story-card-grid {
@@ -2065,7 +2114,7 @@ select {
   }
 
   .topic-band__heading h2 {
-    font-size: clamp(2.5rem, 13vw, 4rem);
+    font-size: clamp(2rem, 10vw, 3rem);
   }
 
   .topic-band__grid {
@@ -2234,6 +2283,11 @@ select {
   }
 
   .site-menu-trigger > span {
+    transition: none;
+  }
+
+  .homepage-card__read span,
+  .topic-band__heading .text-link span {
     transition: none;
   }
 }

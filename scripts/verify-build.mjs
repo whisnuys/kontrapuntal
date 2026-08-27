@@ -237,6 +237,43 @@ if (existsSync(join(rootPath, 'index.html'))) {
       'Homepage card Read links are not aligned to the right.',
     );
     assert(
+      stylesheet.includes('.homepage-card{') &&
+        stylesheet.includes('flex-direction:column') &&
+        stylesheet.includes('.homepage-card__body{') &&
+        stylesheet.includes('flex:1'),
+      'Homepage cards must stretch their bodies so Read links share a consistent bottom alignment.',
+    );
+    assert(
+      stylesheet.includes('.homepage-card__read span,.topic-band__heading .text-link span{') &&
+        stylesheet.includes('transition:transform .18s ease-out') &&
+        stylesheet.includes('.topic-band__heading .text-link:is(:hover,:focus-visible) span{transform:translate(.2em)'),
+      'Read and More arrows must have a subtle hover and keyboard-focus animation.',
+    );
+    assert(
+      stylesheet.includes('.topic-band__grid a:hover{color:var(--topic-band-ink)') &&
+        stylesheet.includes('.topic-band__grid a:focus-visible{outline-color:var(--topic-band-ink)'),
+      'Topic card hover and focus states must retain contrast against each topic background.',
+    );
+    assert(
+      stylesheet.includes('.homepage-card__read:is(:hover,:focus-visible){color:inherit;background-color:#0000}') &&
+        stylesheet.includes('.topic-band__heading h2 a:hover{color:#c85a51'),
+      'Read links must keep their colors while topic heading titles use the accent hover color.',
+    );
+    assert(
+      stylesheet.includes('.topic-band__grid .homepage-card h3 a:hover{color:var(--topic-band-bg);background-color:var(--topic-band-ink)'),
+      'Topic card title links must retain a visible contrast-safe hover state.',
+    );
+    assert(
+      ['.editorial-lead h1 a:hover', '.homepage-card h3 a:hover', '.story-card h3 a:hover', '.story-row h3 a:hover', '.thread-block h3 a:hover', '.library-item h3 a:hover']
+        .every((selector) => stylesheet.includes(selector)) &&
+        stylesheet.includes('color:#c85a51'),
+      'All card title links must share the accent hover treatment outside topic bands.',
+    );
+    assert(
+      stylesheet.includes('background-color:var(--paper)') && stylesheet.includes('color:var(--ink)'),
+      'Standard card title hovers must invert their normal paper and ink colors.',
+    );
+    assert(
       stylesheet.includes('.homepage-card__meta{flex-direction:row;align-items:center'),
       'Mobile homepage card metadata is not kept inline with centered alignment.',
     );
@@ -275,6 +312,10 @@ if (existsSync(join(rootPath, 'index.html'))) {
     assert(
       /@media \(width<=48rem\)\{[^}]*\}[^@]*\.topic-band\{padding:0/.test(stylesheet),
       'Mobile topic bands must not add a topic-color strip above the title panel.',
+    );
+    assert(
+      stylesheet.includes('.topic-band__heading h2{font-size:clamp(2rem,10vw,3rem)'),
+      'Mobile topic headings must use the compact title scale.',
     );
     assert(
       stylesheet.includes('.site-frame{width:100%;min-width:0'),
