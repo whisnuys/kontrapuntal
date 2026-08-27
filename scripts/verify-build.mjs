@@ -25,6 +25,8 @@ const requiredFiles = [
   'notes/index.html',
   'notes/demo-against-default-settings/index.html',
   'notes/demo-archived-method/index.html',
+  'notes/demo-practice-the-retrieval/index.html',
+  'notes/demo-learn-at-the-edge-of-recall/index.html',
   'topics/index.html',
   'library/index.html',
   'about/index.html',
@@ -82,6 +84,16 @@ if (existsSync(join(rootPath, 'notes/demo-against-default-settings/index.html'))
   assert(publishedPage.includes('property="og:title"'), 'Published note is missing Open Graph metadata.');
 }
 
+if (existsSync(join(rootPath, 'topics/learning/index.html'))) {
+  const learningTopicPage = read('topics/learning/index.html');
+  for (const slug of ['demo-practice-the-retrieval', 'demo-learn-at-the-edge-of-recall']) {
+    assert(
+      learningTopicPage.includes(`/notes/${slug}`),
+      `Learning topic page is missing the published ${slug} demo note.`,
+    );
+  }
+}
+
 const editorialStructures = [
   ['index.html', 'data-layout="editorial-front"'],
   ['index.html', 'class="editorial-lead"'],
@@ -126,12 +138,14 @@ if (existsSync(join(rootPath, 'index.html'))) {
   assert(topicNavigation, 'Homepage is missing the editorial topic navigation.');
   const topicNavigationLinkCount = (topicNavigation?.match(/<a\b/g) ?? []).length;
   assert(
-    topicNavigationLinkCount >= 1 && topicNavigationLinkCount <= 5,
-    'Editorial topic navigation must contain Popular and no more than four ranked topics.',
+    topicNavigationLinkCount === 4,
+    'Editorial topic navigation must contain exactly four editorial topics.',
   );
   assert(
-    topicNavigation?.includes('href="/#popular"'),
-    'Editorial topic navigation is missing the Popular destination.',
+    ['/topics/technology', '/topics/society', '/topics/media', '/topics/learning']
+      .every((href) => topicNavigation?.includes(`href="${href}"`)) &&
+      !topicNavigation?.includes('href="/#popular"'),
+    'Editorial topic navigation must feature Technology, Society, Media, and Learning instead of Popular.',
   );
   assert(
     homepage.includes('id="popular"') && homepage.includes('id="popular-heading"'),
@@ -244,6 +258,12 @@ if (existsSync(join(rootPath, 'index.html'))) {
       'Homepage cards must stretch their bodies so Read links share a consistent bottom alignment.',
     );
     assert(
+      stylesheet.includes('.story-card-grid:before,.story-card-grid:after{') &&
+        stylesheet.includes('.story-card-grid:has(>.story-card:nth-child(3n+1):last-child):before') &&
+        stylesheet.includes('.story-card-grid:has(>.story-card:nth-child(3n+2):last-child):after'),
+      'Incomplete story-card grid rows must render empty divider cells on desktop.',
+    );
+    assert(
       stylesheet.includes('.homepage-card__read span,.topic-band__heading .text-link span{') &&
         stylesheet.includes('transition:transform .18s ease-out') &&
         stylesheet.includes('.topic-band__heading .text-link:is(:hover,:focus-visible) span{transform:translate(.2em)'),
@@ -316,6 +336,15 @@ if (existsSync(join(rootPath, 'index.html'))) {
     assert(
       stylesheet.includes('.topic-band__heading h2{font-size:clamp(2rem,10vw,3rem)'),
       'Mobile topic headings must use the compact title scale.',
+    );
+    assert(
+      stylesheet.includes('.topic-band__heading .text-link,.topic-band__heading .text-link span{font-size:0') &&
+        stylesheet.includes('.topic-band__heading .text-link span:before{content:"↗"'),
+      'Mobile topic actions must hide the More label and use the Read-style arrow glyph.',
+    );
+    assert(
+      stylesheet.includes('.topic-band__heading .text-link:is(:hover,:focus-visible) span{transform:translate(.2rem,-.2rem)'),
+      'Mobile topic arrows must animate diagonally up and right.',
     );
     assert(
       stylesheet.includes('.site-frame{width:100%;min-width:0'),
@@ -403,6 +432,11 @@ if (existsSync(join(rootPath, 'notes/index.html'))) {
   assert(
     notesPage.includes('id="clear-note-filters"') && notesPage.includes('type="submit">Apply filters'),
     'Notes filter dialog must provide Clear and Apply actions.',
+  );
+  assert(
+    notesPage.includes('class="story-card__open"') &&
+      notesPage.includes('aria-label="Read [Demo] Against Default Settings"'),
+    'Notes listing cards must expose an accessible arrow link to the full note.',
   );
   const notesStylesheetHref = notesPage.match(/<link rel="stylesheet" href="([^"]+\.css)">/)?.[1];
   if (notesStylesheetHref) {

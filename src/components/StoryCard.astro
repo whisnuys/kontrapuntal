@@ -31,7 +31,9 @@ const href = noteHref(note.id);
     <p>{note.data.description}</p>
     <div class="story-card__footer">
       <span>{formatLabel(note.data.format)}</span>
-      <span aria-hidden="true">↗</span>
+      <a class="story-card__open" href={href} aria-label={`Read ${note.data.title}`}>
+        <span aria-hidden="true">↗</span>
+      </a>
     </div>
   </div>
 </article>

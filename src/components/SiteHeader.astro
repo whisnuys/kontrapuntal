@@ -15,6 +15,7 @@ const primaryNavigation = [
   { href: '/topics', label: 'Topics' },
   { href: '/about', label: 'About' },
 ];
+const homepageTopics = ['technology', 'society', 'media', 'learning'];
 const notes = await getDiscoverableNotes();
 const navigationTopics = selectNavigationTopics(notes.map(toNoteSummary));
 const isHomepage = currentPath === '/';
@@ -26,11 +27,10 @@ const isCurrentTopic = (topic: string) => currentPath === topicHref(topic);
 {isHomepage && (
   <nav
     class="header-topic-nav"
-    aria-label="Popular and featured topics"
-    style={`--header-topic-count: ${navigationTopics.featured.length + 1}`}
+    aria-label="Featured topics"
+    style={`--header-topic-count: ${homepageTopics.length}`}
   >
-    <a href="/#popular" aria-current="page">Popular</a>
-    {navigationTopics.featured.map((topic) => (
+    {homepageTopics.map((topic) => (
       <a href={topicHref(topic)} aria-current={isCurrentTopic(topic) ? 'page' : undefined}>
         {formatLabel(topic)}
       </a>
