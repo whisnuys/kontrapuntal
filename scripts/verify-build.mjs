@@ -124,6 +124,19 @@ for (const [file, marker] of editorialStructures) {
   assert(read(file).includes(marker), `${file} is missing the redesigned editorial marker ${marker}.`);
 }
 
+if (existsSync(join(rootPath, 'about/index.html'))) {
+  const aboutPage = read('about/index.html');
+  assert(
+    aboutPage.includes('The name is rooted in the Latin phrase') &&
+      aboutPage.includes('punctus contra punctum') &&
+      aboutPage.includes('Every post here is a record of thinking in progress') &&
+      aboutPage.includes('What appears here'),
+    'About page is missing the approved Kontrapuntal editorial statement.',
+  );
+  assert(aboutPage.includes("information that’s not to follow trends"), 'About page must use the corrected contraction.');
+  assert(!aboutPage.includes('How it is made'), 'About page must not retain the superseded production-method section.');
+}
+
 if (existsSync(join(rootPath, 'index.html'))) {
   const homepage = read('index.html');
   const topicNavigation = homepage.match(
