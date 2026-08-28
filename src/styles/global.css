@@ -2317,6 +2317,18 @@ select {
   }
 }
 
+[data-note-reveal] {
+  transition:
+    opacity 420ms ease-out,
+    transform 420ms ease-out;
+  transition-delay: calc(var(--note-reveal-index, 0) * 65ms);
+}
+
+[data-note-reveal].is-reveal-pending {
+  opacity: 0;
+  transform: translateY(1rem);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -2336,7 +2348,8 @@ select {
   }
 
   .homepage-card__read span,
-  .topic-band__heading .text-link span {
+  .topic-band__heading .text-link span,
+  [data-note-reveal] {
     transition: none;
   }
 }

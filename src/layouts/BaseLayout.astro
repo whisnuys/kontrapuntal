@@ -70,5 +70,33 @@ const imageUrl = new URL(image, Astro.site);
       <slot />
     </main>
     <SiteFooter />
+    <script>
+      const noteCards = Array.from(document.querySelectorAll<HTMLElement>('[data-note-reveal]'));
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      if (noteCards.length && !reducedMotion.matches && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries, currentObserver) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+
+              entry.target.classList.remove('is-reveal-pending');
+              currentObserver.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -8% 0px', threshold: 0.1 },
+        );
+
+        noteCards.forEach((card, index) => {
+          card.style.setProperty('--note-reveal-index', String(index % 3));
+          const cardBounds = card.getBoundingClientRect();
+
+          if (cardBounds.top >= window.innerHeight || cardBounds.bottom <= 0) {
+            card.classList.add('is-reveal-pending');
+            observer.observe(card);
+          }
+        });
+      }
+    </script>
   </body>
 </html>

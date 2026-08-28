@@ -11,7 +11,7 @@ const { note, index = 0 } = Astro.props;
 const href = noteHref(note.id);
 ---
 
-<article class="story-card" data-note-card>
+<article class="story-card" data-note-card data-note-reveal>
   <a class="story-card__media" href={href} aria-label={`Read ${note.data.title}`}>
     {typeof note.data.heroImage === 'string' ? (
       <img src={note.data.heroImage} alt={note.data.heroAlt ?? ''} width="1536" height="1024" loading="lazy" />

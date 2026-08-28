@@ -11,7 +11,7 @@ interface Props {
 const { note, compact = false } = Astro.props;
 ---
 
-<article class:list={['story-row', { 'story-row--compact': compact }]} data-note-card>
+<article class:list={['story-row', { 'story-row--compact': compact }]} data-note-card data-note-reveal>
   <div class="story-row__meta">
     <span>{formatLabel(note.data.contentType)}</span>
     <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>

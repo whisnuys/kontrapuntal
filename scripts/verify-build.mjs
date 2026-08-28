@@ -133,8 +133,12 @@ if (existsSync(join(rootPath, 'index.html'))) {
     assert(homepage.includes(color), `Homepage topic bands are missing the approved ${color} background.`);
   }
 
-  const homepageCards = [...homepage.matchAll(/<article class="homepage-card[^"]*">([\s\S]*?)<\/article>/g)];
+  const homepageCards = [...homepage.matchAll(/<article[^>]*class="homepage-card[^"]*"[^>]*>([\s\S]*?)<\/article>/g)];
   assert(homepageCards.length > 0, 'Homepage is missing its story cards.');
+  assert(
+    homepageCards.every(([card]) => card.includes('data-note-reveal')),
+    'Homepage story cards must opt into the scroll reveal animation.',
+  );
   assert(topicNavigation, 'Homepage is missing the editorial topic navigation.');
   const topicNavigationLinkCount = (topicNavigation?.match(/<a\b/g) ?? []).length;
   assert(
@@ -256,6 +260,11 @@ if (existsSync(join(rootPath, 'index.html'))) {
         stylesheet.includes('.homepage-card__body{') &&
         stylesheet.includes('flex:1'),
       'Homepage cards must stretch their bodies so Read links share a consistent bottom alignment.',
+    );
+    assert(
+      stylesheet.includes('[data-note-reveal].is-reveal-pending{opacity:0;transform:translateY(1rem)') &&
+        stylesheet.includes('transition:opacity .42s ease-out,transform .42s ease-out'),
+      'The note-card scroll reveal styles are missing.',
     );
     assert(
       stylesheet.includes('.story-card-grid:before,.story-card-grid:after{') &&
@@ -399,6 +408,16 @@ if (existsSync(join(rootPath, 'index.html'))) {
 
 if (existsSync(join(rootPath, 'notes/index.html'))) {
   const notesPage = read('notes/index.html');
+  assert(
+    notesPage.includes('data-note-reveal'),
+    'Notes listing cards must opt into the scroll reveal animation.',
+  );
+  assert(
+    notesPage.includes('IntersectionObserver') &&
+      notesPage.includes('is-reveal-pending') &&
+      notesPage.includes('prefers-reduced-motion: reduce'),
+    'The shared one-time, reduced-motion-safe scroll reveal script is missing.',
+  );
   assert(
     !notesPage.includes('masthead-wordmark'),
     'The Kontrapuntal wordmark must render only on the homepage.',
