@@ -1331,6 +1331,10 @@ select {
   border-bottom: 2px solid var(--paper);
 }
 
+.topic-page-header {
+  border-bottom-color: var(--topic-page-divider, var(--paper));
+}
+
 .page-header__grid {
   display: grid;
   grid-template-columns: minmax(0, 1.6fr) minmax(18rem, 0.55fr);

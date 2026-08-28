@@ -94,6 +94,21 @@ if (existsSync(join(rootPath, 'topics/learning/index.html'))) {
   }
 }
 
+if (existsSync(join(rootPath, 'topics/attention/index.html'))) {
+  const attentionTopicPage = read('topics/attention/index.html');
+  assert(
+    attentionTopicPage.includes('--topic-page-divider: #8B362F'),
+    'Attention topic page must reuse its homepage color for the existing header divider.',
+  );
+  const stylesheetHref = attentionTopicPage.match(/<link rel="stylesheet" href="([^"]+\.css)">/)?.[1];
+  if (stylesheetHref) {
+    assert(
+      read(stylesheetHref.replace(/^\//, '')).includes('.topic-page-header{border-bottom-color:var(--topic-page-divider,var(--paper))'),
+      'Topic page header divider must use the per-topic color custom property.',
+    );
+  }
+}
+
 const editorialStructures = [
   ['index.html', 'data-layout="editorial-front"'],
   ['index.html', 'class="editorial-lead"'],

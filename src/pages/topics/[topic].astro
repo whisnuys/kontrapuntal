@@ -2,6 +2,7 @@
 import StoryCard from '../../components/StoryCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getDiscoverableNotes, type NoteEntry } from '../../lib/content.ts';
+import { getHomepageTopicPalette } from '../../lib/homepage.ts';
 import { formatLabel } from '../../lib/presentation.ts';
 
 export async function getStaticPaths() {
@@ -19,11 +20,15 @@ interface Props {
 }
 
 const { topic, notes } = Astro.props;
+const topicPalette = getHomepageTopicPalette(topic);
 ---
 
 <BaseLayout title={formatLabel(topic)} description={`Published Kontrapuntal notes about ${formatLabel(topic)}.`}>
   <div data-layout="topic-directory">
-  <header class="page-header topic-page-header">
+  <header
+    class="page-header topic-page-header"
+    style={`--topic-page-divider: ${topicPalette?.background ?? '#ECE5D8'};`}
+  >
     <p class="eyebrow">Topic · {notes.length} {notes.length === 1 ? 'note' : 'notes'}</p>
     <div class="page-header__grid">
       <h1>{formatLabel(topic)}</h1>
