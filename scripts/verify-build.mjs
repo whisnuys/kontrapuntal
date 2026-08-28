@@ -468,6 +468,22 @@ if (existsSync(join(rootPath, 'notes/index.html'))) {
     );
     const mobileMedia = notesStylesheet.slice(mobileMediaStart);
     assert(
+      notesStylesheet.includes('.story-card-grid:has(>[data-filter-item]:nth-child(3n+1):last-child):before') &&
+        notesStylesheet.includes('.story-card-grid:has(>[data-filter-item]:nth-child(3n+2):last-child):after') &&
+        notesStylesheet.includes('.story-card-grid:has(>[data-filter-item]:nth-child(odd):last-child):after'),
+      'Incomplete Notes index rows must render their missing right-side grid dividers.',
+    );
+    assert(
+      notesStylesheet.includes('.story-card-grid--remainder-1:before,.story-card-grid--remainder-1:after') &&
+        notesStylesheet.includes('.story-card-grid--remainder-2:after'),
+      'Filtered Notes results must retain incomplete-row divider support.',
+    );
+    assert(
+      notesPage.includes('classList.toggle(`story-card-grid--remainder-1`') &&
+        notesPage.includes('classList.toggle(`story-card-grid--remainder-2`'),
+      'Notes filtering must mark one- and two-card final rows for their grid dividers.',
+    );
+    assert(
       notesStylesheet.includes('.note-filters{grid-template-columns:repeat(3,minmax(0,1fr))') &&
         tabletMedia.includes('.note-filters{grid-template-columns:repeat(3,minmax(0,1fr))'),
       'Tablet Notes filters must keep all three select fields balanced without a blank grid cell.',

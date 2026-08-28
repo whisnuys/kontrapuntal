@@ -1038,13 +1038,21 @@ select {
 @media (min-width: 64.01rem) {
   .story-card-grid:has(> .story-card:nth-child(3n + 1):last-child)::before,
   .story-card-grid:has(> .story-card:nth-child(3n + 1):last-child)::after,
-  .story-card-grid:has(> .story-card:nth-child(3n + 2):last-child)::after {
+  .story-card-grid:has(> .story-card:nth-child(3n + 2):last-child)::after,
+  .story-card-grid:has(> [data-filter-item]:nth-child(3n + 1):last-child)::before,
+  .story-card-grid:has(> [data-filter-item]:nth-child(3n + 1):last-child)::after,
+  .story-card-grid:has(> [data-filter-item]:nth-child(3n + 2):last-child)::after,
+  .story-card-grid--remainder-1::before,
+  .story-card-grid--remainder-1::after,
+  .story-card-grid--remainder-2::after {
     display: block;
   }
 }
 
 @media (min-width: 48.01rem) and (max-width: 64rem) {
-  .story-card-grid:has(> .story-card:nth-child(2n + 1):last-child)::after {
+  .story-card-grid:has(> .story-card:nth-child(2n + 1):last-child)::after,
+  .story-card-grid:has(> [data-filter-item]:nth-child(2n + 1):last-child)::after,
+  .story-card-grid--remainder-1::after {
     display: block;
   }
 }

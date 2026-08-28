@@ -62,6 +62,22 @@ const searchableText = (note: (typeof notes)[number]) =>
     const label = document.querySelector<HTMLElement>('#result-label');
     const empty = document.querySelector<HTMLElement>('#filter-empty');
     const clear = document.querySelector<HTMLAnchorElement>('#clear-filters');
+    const notesList = document.querySelector<HTMLElement>('#notes-list');
+    let visibleCardCount = 0;
+
+    const updateGridRemainder = () => {
+      if (!notesList) return;
+
+      const columns = window.matchMedia('(max-width: 30rem)').matches
+        ? 1
+        : window.matchMedia('(max-width: 64rem)').matches
+          ? 2
+          : 3;
+      const remainder = visibleCardCount % columns;
+
+      notesList.classList.toggle('story-card-grid--remainder-1', remainder === 1);
+      notesList.classList.toggle('story-card-grid--remainder-2', remainder === 2);
+    };
 
     const applyFilters = (writeUrl = true) => {
       if (!form) return;
@@ -84,6 +100,9 @@ const searchableText = (note: (typeof notes)[number]) =>
         card.hidden = !matches;
         if (matches) visible += 1;
       });
+
+      visibleCardCount = visible;
+      updateGridRemainder();
 
       if (count) count.textContent = String(visible);
       if (label) label.textContent = visible === 1 ? 'published note' : 'published notes';
@@ -110,5 +129,7 @@ const searchableText = (note: (typeof notes)[number]) =>
       }
       applyFilters(false);
     }
+
+    window.addEventListener('resize', updateGridRemainder);
   </script>
 </BaseLayout>
