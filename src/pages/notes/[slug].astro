@@ -2,13 +2,11 @@
 import { Image } from 'astro:assets';
 import { render } from 'astro:content';
 
-import SectionHeader from '../../components/SectionHeader.astro';
 import SourceCard from '../../components/SourceCard.astro';
-import StoryRow from '../../components/StoryRow.astro';
 import TopicLink from '../../components/TopicLink.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getDiscoverableNotes, getRoutableNotes, toNoteSummary, type NoteEntry } from '../../lib/content.ts';
-import { estimateReadingMinutes, rankRelatedNotes } from '../../lib/content-policy.ts';
+import { getRoutableNotes, type NoteEntry } from '../../lib/content.ts';
+import { estimateReadingMinutes } from '../../lib/content-policy.ts';
 import { formatDate, formatLabel } from '../../lib/presentation.ts';
 
 export async function getStaticPaths() {
@@ -23,13 +21,6 @@ interface Props {
 const { note } = Astro.props;
 const { Content } = await render(note);
 const readingMinutes = estimateReadingMinutes(note.body ?? '');
-const allPublished = await getDiscoverableNotes();
-const related = rankRelatedNotes(toNoteSummary(note), allPublished.map(toNoteSummary), 3).flatMap(
-  ({ id }) => {
-    const entry = allPublished.find((candidate) => candidate.id === id);
-    return entry ? [entry] : [];
-  },
-);
 const isArchived = note.data.status === 'archived';
 const heroImage = note.data.heroImage;
 const imagePath = typeof heroImage === 'string' ? heroImage : undefined;
@@ -67,7 +58,7 @@ const jsonLd = {
   )}
 
   <article class="article" data-layout="article-reading">
-    <header class="shell article-header">
+    <header class="article-header">
       <p class="eyebrow">{formatLabel(note.data.contentType)} · {formatLabel(note.data.format)}</p>
       <h1>{note.data.title}</h1>
       <p class="article-dek">{note.data.description}</p>
@@ -83,7 +74,7 @@ const jsonLd = {
     </header>
 
     {heroImage && (
-      <figure class="shell article-hero">
+      <figure class="article-hero">
         {typeof heroImage === 'string' ? (
           <img src={heroImage} alt={note.data.heroAlt ?? ''} width="1344" height="756" />
         ) : (
@@ -97,15 +88,6 @@ const jsonLd = {
       {note.data.source && <SourceCard source={note.data.source} />}
     </div>
   </article>
-
-  {related.length > 0 && (
-    <aside class="shell related-notes" aria-labelledby="related-heading">
-      <SectionHeader title="Continue reading" kicker="Related notes" />
-      <div id="related-heading">
-        {related.map((relatedNote) => <StoryRow note={relatedNote} compact />)}
-      </div>
-    </aside>
-  )}
 
   <script>
     const copyButton = document.querySelector<HTMLButtonElement>('[data-copy-link]');
