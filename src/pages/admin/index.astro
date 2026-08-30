@@ -1,19 +1,24 @@
+---
+export const prerender = true;
+---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
+    <base href="/admin/" />
     <link rel="icon" type="image/svg+xml" href="/favicon_kp/favicon.svg" />
     <title>Kontrapuntal Editor</title>
   </head>
   <body>
     <script
+      is:inline
       src="https://unpkg.com/decap-cms@3.15.1/dist/decap-cms.js"
       integrity="sha384-in6eHztHveqQ7uMZ1fDaKlDmacQLFuLH2wWrFTiymyuS8zQ5bixwL8U3AeRi8h/L"
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script src="/admin/init.js"></script>
+    <script is:inline src="/admin/init.js"></script>
   </body>
 </html>

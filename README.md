@@ -21,8 +21,7 @@ in a second terminal:
 npm run cms:local
 ```
 
-Then open `http://localhost:4321/admin/index.html`. Production CMS setup and writer onboarding are documented
-in [`docs/CMS.md`](docs/CMS.md).
+Then open `http://localhost:4321/admin/`.
 
 ## Verification
 

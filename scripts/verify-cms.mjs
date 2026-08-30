@@ -8,7 +8,8 @@ import { collectCollectionFiles } from './verify-cms-utils.mjs';
 
 const rootPath = new URL('../', import.meta.url).pathname;
 const configPath = join(rootPath, 'public/admin/config.yml');
-const adminIndexPath = join(rootPath, 'public/admin/index.html');
+const adminInitPath = join(rootPath, 'public/admin/init.js');
+const adminRoutePath = join(rootPath, 'src/pages/admin/index.astro');
 const notesPath = join(rootPath, 'src/content/notes');
 const authorsPath = join(rootPath, 'src/content/authors');
 const failures = [];
@@ -26,10 +27,12 @@ function optionValues(options) {
 }
 
 assert(existsSync(configPath), 'Missing public/admin/config.yml.');
-assert(existsSync(adminIndexPath), 'Missing public/admin/index.html.');
+assert(existsSync(adminInitPath), 'Missing public/admin/init.js.');
+assert(existsSync(adminRoutePath), 'Missing Astro /admin entry route.');
 
-if (existsSync(adminIndexPath)) {
-  const adminIndex = readFileSync(adminIndexPath, 'utf8');
+if (existsSync(adminRoutePath)) {
+  const adminIndex = readFileSync(adminRoutePath, 'utf8');
+  assert(adminIndex.includes('<base href="/admin/"'), 'Admin must define a stable base URL for config loading.');
   assert(
     adminIndex.includes('https://unpkg.com/decap-cms@3.15.1/dist/decap-cms.js'),
     'Admin must load the pinned Decap CMS 3.15.1 bundle.',
@@ -40,6 +43,11 @@ if (existsSync(adminIndexPath)) {
     ),
     'Admin is missing the verified Decap CMS Subresource Integrity hash.',
   );
+}
+
+if (existsSync(adminInitPath)) {
+  const adminInit = readFileSync(adminInitPath, 'utf8');
+  assert(adminInit.includes("CMS.registerPreviewStyle('/admin/preview.css')"), 'Admin must load its article preview stylesheet.');
 }
 
 if (existsSync(configPath)) {

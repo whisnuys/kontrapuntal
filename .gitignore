@@ -30,10 +30,4 @@ pnpm-debug.log*
 AGENTS.md
 CLAUDE.md
 design.md
-docs/*
-!docs/AGENT_CONTEXT.md
-!docs/CMS.md
-!docs/DEPLOYMENT.md
-!docs/FLOW_DIAGRAMS.md
-!docs/PRD.md
-!docs/SOT.md
+docs/
