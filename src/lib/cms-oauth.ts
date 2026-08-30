@@ -25,7 +25,6 @@ export function createCspNonce(): string {
 export function buildAuthorizationUrl(clientId: string, state: string): URL {
   const url = new URL(GITHUB_AUTHORIZE_URL);
   const callback = new URL('/api/cms/callback', CMS_ORIGIN);
-  callback.searchParams.set('provider', 'github');
   url.search = new URLSearchParams({
     client_id: clientId,
     redirect_uri: callback.href,

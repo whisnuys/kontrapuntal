@@ -19,7 +19,7 @@ describe('Decap GitHub OAuth', () => {
     assert.equal(url.searchParams.get('client_id'), 'client-id');
     assert.equal(
       url.searchParams.get('redirect_uri'),
-      'https://kontrapuntal.whisnuys.com/api/cms/callback?provider=github',
+      'https://kontrapuntal.whisnuys.com/api/cms/callback',
     );
     assert.equal(url.searchParams.get('scope'), 'repo');
     assert.equal(url.searchParams.get('state'), 'state-value');

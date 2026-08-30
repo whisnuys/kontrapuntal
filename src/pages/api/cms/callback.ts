@@ -37,7 +37,8 @@ export const GET: APIRoute = async ({ cookies, request, url }) => {
     });
   }
 
-  if (url.searchParams.get('provider') !== 'github') {
+  const provider = url.searchParams.get('provider');
+  if (provider && provider !== 'github') {
     return callbackResponse({ error: 'Unsupported CMS authorization provider.' }, 400);
   }
 
