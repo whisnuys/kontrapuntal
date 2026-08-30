@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Reading the Public System"
 description: "A demonstration essay about reading technical systems as public arguments."
+authors:
+  - whisnu-ys
 publishedAt: 2026-07-23
 status: published
 contentType: book

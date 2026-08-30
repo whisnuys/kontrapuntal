@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Learn at the Edge of Recall"
 description: "A sample note about choosing review material that is difficult without becoming opaque."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-01
 status: published
 contentType: learning

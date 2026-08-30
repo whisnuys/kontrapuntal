@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Learning by Explanation"
 description: "A sample note about using plain explanation to locate gaps in understanding."
+authors:
+  - whisnu-ys
 publishedAt: 2026-07-27
 status: published
 contentType: learning

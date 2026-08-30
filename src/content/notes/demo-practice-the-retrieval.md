@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Practice the Retrieval"
 description: "A sample note about recalling an idea before returning to the answer."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-05
 status: published
 contentType: learning

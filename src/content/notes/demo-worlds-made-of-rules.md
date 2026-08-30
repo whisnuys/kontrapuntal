@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Worlds Made of Rules"
 description: "A demonstration note about the public ideas carried by fictional rules and playable worlds."
+authors:
+  - whisnu-ys
 publishedAt: 2026-07-20
 status: published
 contentType: game

@@ -1,13 +1,13 @@
 ---
 import { Image } from 'astro:assets';
-import { render } from 'astro:content';
+import { getEntries, render } from 'astro:content';
 
 import SourceCard from '../../components/SourceCard.astro';
 import TopicLink from '../../components/TopicLink.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getRoutableNotes, type NoteEntry } from '../../lib/content.ts';
 import { estimateReadingMinutes } from '../../lib/content-policy.ts';
-import { formatDate, formatLabel } from '../../lib/presentation.ts';
+import { formatAuthorNames, formatDate, formatLabel } from '../../lib/presentation.ts';
 
 export async function getStaticPaths() {
   const notes = await getRoutableNotes();
@@ -20,6 +20,8 @@ interface Props {
 
 const { note } = Astro.props;
 const { Content } = await render(note);
+const authors = await getEntries(note.data.authors);
+const authorNames = authors.map((author) => author.data.name);
 const readingMinutes = estimateReadingMinutes(note.body ?? '');
 const isArchived = note.data.status === 'archived';
 const heroImage = note.data.heroImage;
@@ -31,6 +33,7 @@ const jsonLd = {
   description: note.data.description,
   datePublished: note.data.publishedAt.toISOString(),
   dateModified: (note.data.updatedAt ?? note.data.publishedAt).toISOString(),
+  author: authorNames.map((name) => ({ '@type': 'Person', name })),
   mainEntityOfPage: new URL(`/notes/${note.id}`, Astro.site).href,
   publisher: { '@type': 'Organization', name: 'Kontrapuntal', url: Astro.site?.href },
   keywords: note.data.topics.join(', '),
@@ -63,6 +66,7 @@ const jsonLd = {
       <h1>{note.data.title}</h1>
       <p class="article-dek">{note.data.description}</p>
       <div class="article-meta">
+        <span>By {formatAuthorNames(authorNames)}</span>
         <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
         {note.data.updatedAt && <span>Updated {formatDate(note.data.updatedAt)}</span>}
         <span>{readingMinutes || 1} min read</span>

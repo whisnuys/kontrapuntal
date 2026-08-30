@@ -1,6 +1,8 @@
 ---
 title: "[Demo] A Book as Counterargument"
 description: "A sample reading note on treating a book as an argument rather than a trophy."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-18
 status: published
 contentType: book

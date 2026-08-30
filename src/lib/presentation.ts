@@ -14,6 +14,18 @@ export function formatLabel(value: string): string {
     .join(' ');
 }
 
+export function formatAuthorNames(names: string[]): string {
+  if (names.length === 0) {
+    throw new Error('A byline requires at least one author.');
+  }
+
+  if (names.length === 1) {
+    return names[0];
+  }
+
+  return `${names.slice(0, -1).join(', ')} & ${names.at(-1)}`;
+}
+
 export function noteHref(id: string): string {
   return `/notes/${id}`;
 }

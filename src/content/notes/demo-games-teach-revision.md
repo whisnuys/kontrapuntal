@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Games Teach Revision"
 description: "A sample reflection on failure, feedback, and trying again."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-15
 status: published
 contentType: game

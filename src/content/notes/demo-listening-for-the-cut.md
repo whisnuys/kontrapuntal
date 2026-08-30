@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Listening for the Cut"
 description: "A demonstration podcast note about editing, silence, and conversational rhythm."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-12
 status: published
 contentType: podcast

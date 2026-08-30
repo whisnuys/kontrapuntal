@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Ask a Smaller Question"
 description: "A brief sample note about turning vague curiosity into a useful next step."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-03
 status: published
 contentType: thought

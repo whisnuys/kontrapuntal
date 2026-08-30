@@ -11,6 +11,13 @@ const sourceSchema = z.object({
   url: z.url().optional(),
 });
 
+const authors = defineCollection({
+  loader: glob({ base: './src/content/authors', pattern: '**/*.json' }),
+  schema: z.object({
+    name: z.string().min(1),
+  }),
+});
+
 const notes = defineCollection({
   loader: glob({ base: './src/content/notes', pattern: '**/*.{md,mdx}' }),
   schema: ({ image }) =>
@@ -18,6 +25,7 @@ const notes = defineCollection({
       .object({
         title: z.string().min(1),
         description: z.string().min(1),
+        authors: z.array(reference('authors')).min(1).max(4),
         publishedAt: z.coerce.date(),
         updatedAt: z.coerce.date().optional(),
         status: z.enum(NOTE_STATUSES),
@@ -73,4 +81,4 @@ const library = defineCollection({
       }),
 });
 
-export const collections = { notes, library };
+export const collections = { authors, notes, library };

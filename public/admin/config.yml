@@ -1,0 +1,186 @@
+backend:
+  name: github
+  repo: whisnuys/kontrapuntal
+  branch: main
+  base_url: https://kontrapuntal.whisnuys.com
+  auth_endpoint: /api/cms/auth
+  auth_scope: repo
+  squash_merges: true
+  preview_context: Vercel
+  commit_messages:
+    create: "content: create {{collection}} {{slug}}"
+    update: "content: update {{collection}} {{slug}}"
+    delete: "content: delete {{collection}} {{slug}}"
+    uploadMedia: "content: upload {{path}}"
+    deleteMedia: "content: delete {{path}}"
+    openAuthoring: "content: {{message}}"
+
+publish_mode: editorial_workflow
+local_backend: true
+site_url: https://kontrapuntal.whisnuys.com
+display_url: https://kontrapuntal.whisnuys.com
+logo_url: /images/logo-kp.svg
+locale: en
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+media_library:
+  name: default
+  config:
+    max_file_size: 5242880
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: "-"
+
+editor:
+  preview: true
+
+collections:
+  - name: authors
+    label: Authors
+    label_singular: Author
+    folder: src/content/authors
+    extension: json
+    format: json
+    create: true
+    delete: false
+    identifier_field: name
+    slug: "{{slug}}"
+    summary: "{{name}}"
+    fields:
+      - { label: Name, name: name, widget: string }
+
+  - name: notes
+    label: Notes
+    label_singular: Note
+    folder: src/content/notes
+    extension: md
+    format: frontmatter
+    create: true
+    delete: false
+    identifier_field: title
+    slug: "{{slug}}"
+    summary: "{{title}} · {{status}} · {{publishedAt}}"
+    preview_path: "notes/{{slug}}"
+    show_preview_links: true
+    sortable_fields: [publishedAt, title, status]
+    view_filters:
+      - { label: Drafts, field: status, pattern: draft }
+      - { label: Published, field: status, pattern: published }
+      - { label: Archived, field: status, pattern: archived }
+    view_groups:
+      - { label: Status, field: status }
+      - { label: Content type, field: contentType }
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text }
+      - label: Authors
+        name: authors
+        widget: relation
+        collection: authors
+        search_fields: [name]
+        display_fields: [name]
+        value_field: "{{slug}}"
+        multiple: true
+        min: 1
+        max: 4
+      - label: Publication date
+        name: publishedAt
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        picker_utc: true
+        default: "{{now}}"
+      - label: Updated date
+        name: updatedAt
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        picker_utc: true
+        required: false
+      - label: Status
+        name: status
+        widget: select
+        default: draft
+        options:
+          - { label: Draft, value: draft }
+          - { label: Published, value: published }
+          - { label: Archived, value: archived }
+      - label: Content type
+        name: contentType
+        widget: select
+        options:
+          - { label: Book, value: book }
+          - { label: Game, value: game }
+          - { label: Video, value: video }
+          - { label: Podcast, value: podcast }
+          - { label: Technology, value: technology }
+          - { label: Issue, value: issue }
+          - { label: Learning, value: learning }
+          - { label: Career, value: career }
+          - { label: Thought, value: thought }
+      - label: Format
+        name: format
+        widget: select
+        options:
+          - { label: Quick note, value: quick-note }
+          - { label: Reflection, value: reflection }
+          - { label: Essay, value: essay }
+      - label: Topics
+        name: topics
+        widget: list
+        min: 1
+        field: { label: Topic, name: topic, widget: string }
+      - { label: Featured, name: featured, widget: boolean, default: false }
+      - label: Hero image
+        name: heroImage
+        widget: image
+        required: false
+        hint: Uploads are committed to public/images/uploads and limited to 5 MiB.
+      - label: Hero image alt text
+        name: heroAlt
+        widget: string
+        required: false
+        hint: Required whenever a hero image is set.
+      - label: Source
+        name: source
+        widget: object
+        required: false
+        collapsed: true
+        fields:
+          - { label: Type, name: type, widget: string }
+          - { label: Title, name: title, widget: string }
+          - { label: Creator, name: creator, widget: string, required: false }
+          - { label: URL, name: url, widget: string, required: false }
+      - label: Writing focus
+        name: writingFocus
+        widget: text
+        required: false
+        hint: Private authoring metadata. Never rendered publicly.
+      - label: New words
+        name: newWords
+        widget: list
+        required: false
+        hint: Private authoring metadata. Never rendered publicly.
+        field: { label: Word, name: word, widget: string }
+      - label: Common mistakes
+        name: commonMistakes
+        widget: list
+        required: false
+        hint: Private authoring metadata. Never rendered publicly.
+        field: { label: Mistake, name: mistake, widget: string }
+      - label: Draft notes
+        name: draftNotes
+        widget: text
+        required: false
+        hint: Private authoring metadata. Never rendered publicly.
+      - label: Body
+        name: body
+        widget: richtext
+        buttons: [bold, italic, code, link, heading-two, heading-three, quote, bulleted-list, numbered-list]
+        editor_components: [image, code-block]
+        modes: [rich_text, raw]

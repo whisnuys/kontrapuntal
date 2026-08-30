@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Unpublished Draft"
 description: "A draft fixture used to verify that unpublished work never receives a route."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-22
 status: draft
 contentType: career

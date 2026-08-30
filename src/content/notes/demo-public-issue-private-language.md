@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Public Issue, Private Language"
 description: "A sample essay about the words used to frame a shared problem."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-08
 status: published
 contentType: issue

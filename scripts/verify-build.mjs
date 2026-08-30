@@ -1,8 +1,9 @@
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
-const root = new URL('../dist/', import.meta.url);
+const root = new URL('../.vercel/output/static/', import.meta.url);
 const rootPath = root.pathname;
+const vercelConfigPath = new URL('../.vercel/output/config.json', import.meta.url).pathname;
 const failures = [];
 
 function assert(condition, message) {
@@ -34,9 +35,13 @@ const requiredFiles = [
   'sitemap-index.xml',
   'sitemap-0.xml',
   'robots.txt',
+  'admin/index.html',
+  'admin/config.yml',
+  'admin/init.js',
+  'admin/preview.css',
 ];
 
-assert(existsSync(rootPath), 'dist/ is missing; run npm run build first.');
+assert(existsSync(rootPath), '.vercel/output/static/ is missing; run npm run build first.');
 for (const file of requiredFiles) assert(existsSync(join(rootPath, file)), `Missing generated route: ${file}`);
 
 assert(
@@ -82,6 +87,31 @@ if (existsSync(join(rootPath, 'notes/demo-against-default-settings/index.html'))
   assert(publishedPage.includes('rel="canonical"'), 'Published note is missing its canonical link.');
   assert(publishedPage.includes('application/ld+json'), 'Published note is missing Article JSON-LD.');
   assert(publishedPage.includes('property="og:title"'), 'Published note is missing Open Graph metadata.');
+  assert(publishedPage.includes('By Whisnu Ys'), 'Published note is missing its resolved author byline.');
+  assert(
+    publishedPage.includes('"author":[{"@type":"Person","name":"Whisnu Ys"}]'),
+    'Published note JSON-LD is missing its Person author.',
+  );
+}
+
+if (existsSync(vercelConfigPath)) {
+  const vercelConfig = JSON.parse(readFileSync(vercelConfigPath, 'utf8'));
+  const acceptedAdapterRoutes = new Set([
+    '^/_server-islands/([^/]+?)/?$',
+    '^/_image/?$',
+    '^/404/?$',
+    '^/.*$',
+  ]);
+  const applicationFunctionRoutes = vercelConfig.routes
+    .filter((route) => route.dest === '_render' && !acceptedAdapterRoutes.has(route.src))
+    .map((route) => route.src);
+  assert(
+    JSON.stringify(applicationFunctionRoutes) ===
+      JSON.stringify(['^/api/cms/auth/?$', '^/api/cms/callback/?$']),
+    `Unexpected application function routes: ${applicationFunctionRoutes.join(', ') || '(none)'}.`,
+  );
+} else {
+  assert(false, '.vercel/output/config.json is missing.');
 }
 
 if (existsSync(join(rootPath, 'topics/learning/index.html'))) {
@@ -525,7 +555,10 @@ if (existsSync(join(rootPath, 'notes/index.html'))) {
 }
 
 if (existsSync(join(rootPath, 'robots.txt'))) {
-  assert(read('robots.txt').includes('/sitemap-index.xml'), 'robots.txt does not advertise the sitemap index.');
+  const robots = read('robots.txt');
+  assert(robots.includes('/sitemap-index.xml'), 'robots.txt does not advertise the sitemap index.');
+  assert(robots.includes('Disallow: /admin/'), 'robots.txt does not disallow the CMS editor.');
+  assert(robots.includes('Disallow: /api/cms/'), 'robots.txt does not disallow CMS OAuth routes.');
 }
 
 if (failures.length > 0) {

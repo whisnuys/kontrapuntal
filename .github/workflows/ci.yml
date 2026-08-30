@@ -27,6 +27,9 @@ jobs:
       - name: Run unit tests
         run: npm test
 
+      - name: Verify CMS configuration and author references
+        run: npm run verify:cms
+
       - name: Check Astro and TypeScript
         run: npm run check
 

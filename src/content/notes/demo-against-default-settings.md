@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Against Default Settings"
 description: "A demonstration essay about choosing tools and habits with intention."
+authors:
+  - whisnu-ys
 publishedAt: 2026-08-21
 status: published
 contentType: technology

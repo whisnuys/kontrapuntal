@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Protecting the Margin"
 description: "A short demonstration note about leaving enough quiet around focused work."
+authors:
+  - whisnu-ys
 publishedAt: 2026-07-31
 status: published
 contentType: technology

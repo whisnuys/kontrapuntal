@@ -1,6 +1,8 @@
 ---
 title: "[Demo] The Useful Rough Edge"
 description: "A demonstration note about keeping early work open enough to revise."
+authors:
+  - whisnu-ys
 publishedAt: 2026-07-29
 status: published
 contentType: thought

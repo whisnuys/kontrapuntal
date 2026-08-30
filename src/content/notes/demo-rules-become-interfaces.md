@@ -1,6 +1,8 @@
 ---
 title: "[Demo] Rules Become Interfaces"
 description: "A demonstration reflection on how systems become visible through play and media."
+authors:
+  - whisnu-ys
 publishedAt: 2026-07-25
 status: published
 contentType: technology

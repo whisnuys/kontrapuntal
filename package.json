@@ -10,18 +10,28 @@
     "check": "astro check",
     "test": "node --test \"src/**/*.test.ts\"",
     "build": "astro build",
+    "cms:local": "decap-server",
     "verify:build": "node scripts/verify-build.mjs",
+    "verify:cms": "node scripts/verify-cms.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.7",
     "@astrojs/rss": "^4.0.19",
+    "@astrojs/vercel": "11.0.7",
     "astro": "^7.2.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@types/node": "^24.13.3",
-    "typescript": "^6.0.3"
+    "decap-server": "3.10.0",
+    "typescript": "^6.0.3",
+    "yaml": "2.9.0"
+  },
+  "overrides": {
+    "@vercel/routing-utils": {
+      "path-to-regexp": "6.3.0"
+    }
   }
 }
