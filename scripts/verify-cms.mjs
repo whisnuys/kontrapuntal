@@ -58,7 +58,7 @@ if (existsSync(configPath)) {
   assert(config.local_backend === true, 'CMS local backend must remain available for local authoring.');
   assert(config.media_folder === 'public/images/uploads', 'CMS media folder must remain Git-backed.');
   assert(config.public_folder === '/images/uploads', 'CMS public media path is incorrect.');
-  assert(config.media_library?.config?.max_file_size === 5242880, 'CMS uploads must be limited to 5 MiB.');
+  assert(!config.media_library, 'CMS must use Decap’s built-in media library without an external library name.');
   assert(config.slug?.encoding === 'ascii', 'CMS slugs must use ASCII encoding.');
   assert(config.slug?.sanitize_replacement === '-', 'CMS slugs must use hyphens for sanitization.');
 
@@ -93,6 +93,10 @@ if (existsSync(configPath)) {
     'CMS note formats do not match the content schema.',
   );
   assert(field(notes?.fields, 'body')?.widget === 'richtext', 'CMS note body must use the rich-text editor.');
+  assert(
+    field(notes?.fields, 'heroImage')?.media_library?.config?.max_file_size === 5242880,
+    'CMS image uploads must be limited to 5 MiB through the built-in media library.',
+  );
   for (const privateField of ['writingFocus', 'newWords', 'commonMistakes', 'draftNotes']) {
     assert(field(notes?.fields, privateField), `CMS is missing shared private authoring field ${privateField}.`);
   }

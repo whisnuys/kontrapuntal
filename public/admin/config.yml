@@ -24,10 +24,6 @@ locale: en
 
 media_folder: public/images/uploads
 public_folder: /images/uploads
-media_library:
-  name: default
-  config:
-    max_file_size: 5242880
 
 slug:
   encoding: ascii
@@ -140,6 +136,9 @@ collections:
         name: heroImage
         widget: image
         required: false
+        media_library:
+          config:
+            max_file_size: 5242880
         hint: Uploads are committed to public/images/uploads and limited to 5 MiB.
       - label: Hero image alt text
         name: heroAlt
