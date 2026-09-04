@@ -22,8 +22,14 @@ display_url: https://kontrapuntal.whisnuys.com
 logo_url: /images/logo-kp.svg
 locale: en
 
-media_folder: public/images/uploads
-public_folder: /images/uploads
+media_library:
+  name: cloudinary
+  output_filename_only: false
+  use_transformations: true
+  use_secure_url: true
+  config:
+    cloud_name: c8tgycuw
+    api_key: "192777111764447"
 
 slug:
   encoding: ascii
@@ -136,10 +142,7 @@ collections:
         name: heroImage
         widget: image
         required: false
-        media_library:
-          config:
-            max_file_size: 5242880
-        hint: Uploads are committed to public/images/uploads and limited to 5 MiB.
+        hint: Upload or select an image from Cloudinary. Add meaningful alt text below.
       - label: Hero image alt text
         name: heroAlt
         widget: string
