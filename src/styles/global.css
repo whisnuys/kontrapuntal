@@ -1757,6 +1757,17 @@ select {
   padding-top: var(--space-6);
 }
 
+.about-portrait-frame {
+  margin: 0 0 var(--space-5);
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.about-portrait {
+  width: 100%;
+  height: auto;
+}
+
 .about-body > h2:first-child {
   margin-top: 0;
 }
