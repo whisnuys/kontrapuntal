@@ -53,6 +53,7 @@ if (existsSync(previewScriptPath)) {
   assert(previewScript.includes("CMS.registerPreviewTemplate('notes'"), 'Admin must register the Notes preview template.');
   assert(previewScript.includes("className: 'article-header'"), 'Notes preview must mirror the article header structure.');
   assert(previewScript.includes("className: 'reading-width article-body'"), 'Notes preview must mirror the article body structure.');
+  assert(previewScript.includes('this.props.getAsset(heroImage)'), 'Notes preview must resolve media-library assets.');
 }
 
 if (existsSync(adminInitPath)) {
@@ -74,9 +75,18 @@ if (existsSync(configPath)) {
   assert(config.backend?.squash_merges === true, 'CMS publishing must squash merge editorial pull requests.');
   assert(config.publish_mode === 'editorial_workflow', 'CMS must use editorial workflow.');
   assert(config.local_backend === true, 'CMS local backend must remain available for local authoring.');
-  assert(config.media_folder === 'public/images/uploads', 'CMS media folder must remain Git-backed.');
-  assert(config.public_folder === '/images/uploads', 'CMS public media path is incorrect.');
-  assert(!config.media_library, 'CMS must use Decap’s built-in media library without an external library name.');
+  assert(!config.media_folder, 'CMS must not stage new media in the Git repository.');
+  assert(!config.public_folder, 'CMS must use complete Cloudinary URLs.');
+  assert(config.media_library?.name === 'cloudinary', 'CMS media library must use Cloudinary.');
+  assert(config.media_library?.output_filename_only === false, 'CMS must store complete Cloudinary URLs.');
+  assert(config.media_library?.use_transformations === true, 'CMS must retain selected Cloudinary transformations.');
+  assert(config.media_library?.use_secure_url === true, 'CMS must store HTTPS Cloudinary URLs.');
+  assert(config.media_library?.config?.cloud_name === 'c8tgycuw', 'CMS Cloudinary cloud name is incorrect.');
+  assert(
+    String(config.media_library?.config?.api_key) === '192777111764447',
+    'CMS Cloudinary public API key is incorrect.',
+  );
+  assert(!('api_secret' in (config.media_library?.config ?? {})), 'CMS must never expose a Cloudinary API secret.');
   assert(config.slug?.encoding === 'ascii', 'CMS slugs must use ASCII encoding.');
   assert(config.slug?.sanitize_replacement === '-', 'CMS slugs must use hyphens for sanitization.');
 
@@ -111,10 +121,7 @@ if (existsSync(configPath)) {
     'CMS note formats do not match the content schema.',
   );
   assert(field(notes?.fields, 'body')?.widget === 'richtext', 'CMS note body must use the rich-text editor.');
-  assert(
-    field(notes?.fields, 'heroImage')?.media_library?.config?.max_file_size === 5242880,
-    'CMS image uploads must be limited to 5 MiB through the built-in media library.',
-  );
+  assert(!field(notes?.fields, 'heroImage')?.media_library, 'Hero image must inherit the global Cloudinary library.');
   for (const privateField of ['writingFocus', 'newWords', 'commonMistakes', 'draftNotes']) {
     assert(field(notes?.fields, privateField), `CMS is missing shared private authoring field ${privateField}.`);
   }

@@ -3,6 +3,11 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 import { CONTENT_TYPES, NOTE_FORMATS, NOTE_STATUSES } from './lib/content-policy.ts';
+import { isApprovedStringImageSource } from './lib/media-policy.ts';
+
+const stringImageSource = z.string().refine(isApprovedStringImageSource, {
+  message: 'Use a root-relative image path or a secure image URL from the configured Cloudinary account.',
+});
 
 const sourceSchema = z.object({
   type: z.string().min(1),
@@ -33,7 +38,7 @@ const notes = defineCollection({
         format: z.enum(NOTE_FORMATS),
         topics: z.array(z.string().min(1)).min(1),
         featured: z.boolean().default(false),
-        heroImage: z.union([z.string().startsWith('/'), image()]).optional(),
+        heroImage: z.union([stringImageSource, image()]).optional(),
         heroAlt: z.string().min(1).optional(),
         source: sourceSchema.optional(),
         writingFocus: z.string().optional(),
@@ -63,7 +68,7 @@ const library = defineCollection({
         creator: z.string().min(1).optional(),
         startedAt: z.coerce.date().optional(),
         finishedAt: z.coerce.date().optional(),
-        cover: z.union([z.string().startsWith('/'), image()]).optional(),
+        cover: z.union([stringImageSource, image()]).optional(),
         coverAlt: z.string().min(1).optional(),
         externalUrl: z.url().optional(),
         relatedNotes: z.array(reference('notes')).default([]),
