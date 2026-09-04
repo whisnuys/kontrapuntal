@@ -122,6 +122,9 @@ if (existsSync(configPath)) {
   );
   assert(field(notes?.fields, 'body')?.widget === 'richtext', 'CMS note body must use the rich-text editor.');
   assert(!field(notes?.fields, 'heroImage')?.media_library, 'Hero image must inherit the global Cloudinary library.');
+  assert(field(notes?.fields, 'featured')?.required === false, 'Featured must remain optional.');
+  assert(field(field(notes?.fields, 'source')?.fields, 'type')?.required === false, 'Source type must remain optional.');
+  assert(field(field(notes?.fields, 'source')?.fields, 'title')?.required === false, 'Source title must remain optional.');
   for (const privateField of ['writingFocus', 'newWords', 'commonMistakes', 'draftNotes']) {
     assert(field(notes?.fields, privateField), `CMS is missing shared private authoring field ${privateField}.`);
   }
