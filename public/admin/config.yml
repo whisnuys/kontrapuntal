@@ -137,7 +137,7 @@ collections:
         widget: list
         min: 1
         field: { label: Topic, name: topic, widget: string }
-      - { label: Featured, name: featured, widget: boolean, default: false }
+      - { label: Featured, name: featured, widget: boolean, required: false, default: false }
       - label: Hero image
         name: heroImage
         widget: image
@@ -154,8 +154,8 @@ collections:
         required: false
         collapsed: true
         fields:
-          - { label: Type, name: type, widget: string }
-          - { label: Title, name: title, widget: string }
+          - { label: Type, name: type, widget: string, required: false }
+          - { label: Title, name: title, widget: string, required: false }
           - { label: Creator, name: creator, widget: string, required: false }
           - { label: URL, name: url, widget: string, required: false }
       - label: Writing focus

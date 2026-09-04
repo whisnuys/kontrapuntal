@@ -4,17 +4,23 @@ import { z } from 'astro/zod';
 
 import { CONTENT_TYPES, NOTE_FORMATS, NOTE_STATUSES } from './lib/content-policy.ts';
 import { isApprovedStringImageSource } from './lib/media-policy.ts';
+import { isOptionalSourceEmpty, type OptionalSource } from './lib/source-policy.ts';
 
 const stringImageSource = z.string().refine(isApprovedStringImageSource, {
   message: 'Use a root-relative image path or a secure image URL from the configured Cloudinary account.',
 });
 
-const sourceSchema = z.object({
-  type: z.string().min(1),
-  title: z.string().min(1),
-  creator: z.string().min(1).optional(),
-  url: z.url().optional(),
-});
+const sourceSchema = z.preprocess(
+  (value) => (isOptionalSourceEmpty(value as OptionalSource | undefined) ? undefined : value),
+  z
+    .object({
+      type: z.string().min(1),
+      title: z.string().min(1),
+      creator: z.string().min(1).optional(),
+      url: z.url().optional(),
+    })
+    .optional(),
+);
 
 const authors = defineCollection({
   loader: glob({ base: './src/content/authors', pattern: '**/*.json' }),
