@@ -9,7 +9,9 @@ export const prerender = true;
     <meta name="robots" content="noindex,nofollow" />
     <base href="/admin/" />
     <link rel="icon" type="image/svg+xml" href="/favicon_kp/favicon.svg" />
+    <link rel="stylesheet" href="/admin/exit-modal.css" />
     <title>Kontrapuntal Editor</title>
+    <script is:inline src="/admin/exit-guard.js"></script>
   </head>
   <body>
     <script
@@ -21,5 +23,17 @@ export const prerender = true;
     ></script>
     <script is:inline src="/admin/init.js"></script>
     <script is:inline src="/admin/preview.js"></script>
+    <dialog class="admin-exit-dialog" id="admin-exit-dialog" aria-labelledby="admin-exit-title">
+      <div class="admin-exit-dialog__content">
+        <p class="admin-exit-dialog__eyebrow">Unsaved changes</p>
+        <h2 id="admin-exit-title">Leave this entry?</h2>
+        <p class="admin-exit-dialog__message">Your unpublished edits will be lost if you leave this page.</p>
+        <div class="admin-exit-dialog__actions">
+          <button class="admin-exit-dialog__keep" type="button" data-exit-dialog-cancel>Keep editing</button>
+          <button class="admin-exit-dialog__leave" type="button" data-exit-dialog-confirm>Leave without saving</button>
+        </div>
+      </div>
+    </dialog>
+    <script is:inline src="/admin/exit-modal.js"></script>
   </body>
 </html>

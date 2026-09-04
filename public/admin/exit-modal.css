@@ -1,0 +1,89 @@
+:root {
+  --admin-dialog-paper: #f1eee5;
+  --admin-dialog-ink: #141512;
+  --admin-dialog-muted: #66655e;
+  --admin-dialog-accent: #c94a3f;
+  --admin-dialog-rule: #141512;
+}
+
+.admin-exit-dialog {
+  width: min(31rem, calc(100vw - 2rem));
+  padding: 0;
+  color: var(--admin-dialog-ink);
+  background: var(--admin-dialog-paper);
+  border: 1px solid var(--admin-dialog-rule);
+  border-radius: 0;
+  box-shadow: 0.5rem 0.5rem 0 rgb(0 0 0 / 28%);
+}
+
+.admin-exit-dialog::backdrop {
+  background: rgb(10 11 9 / 72%);
+}
+
+.admin-exit-dialog__content {
+  padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.admin-exit-dialog__eyebrow {
+  margin: 0 0 0.75rem;
+  color: var(--admin-dialog-accent);
+  font: 700 0.72rem/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-exit-dialog h2 {
+  margin: 0;
+  font: 700 clamp(1.65rem, 5vw, 2.25rem)/1.02 Georgia, serif;
+}
+
+.admin-exit-dialog__message {
+  margin: 1rem 0 0;
+  color: var(--admin-dialog-muted);
+  font: 1rem/1.55 system-ui, sans-serif;
+}
+
+.admin-exit-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.admin-exit-dialog button {
+  min-height: 2.75rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid var(--admin-dialog-rule);
+  border-radius: 0;
+  font: 700 0.84rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.admin-exit-dialog button:focus-visible {
+  outline: 3px solid var(--admin-dialog-accent);
+  outline-offset: 3px;
+}
+
+.admin-exit-dialog__keep {
+  color: var(--admin-dialog-ink);
+  background: transparent;
+}
+
+.admin-exit-dialog__leave {
+  color: var(--admin-dialog-paper);
+  background: var(--admin-dialog-ink);
+}
+
+@media (max-width: 30rem) {
+  .admin-exit-dialog__actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-exit-dialog,
+  .admin-exit-dialog::backdrop {
+    animation: none;
+  }
+}
