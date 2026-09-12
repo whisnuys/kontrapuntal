@@ -8,6 +8,8 @@ interface Props {
 }
 
 const { note } = Astro.props;
+const titleLength = [...note.data.title].length;
+const headlineSize = titleLength > 72 ? 'editorial-lead__headline--very-long' : titleLength > 48 ? 'editorial-lead__headline--long' : '';
 ---
 
 <article class="lead-story">
@@ -30,7 +32,7 @@ const { note } = Astro.props;
   </a>
   <div class="editorial-lead">
     <p class="eyebrow">Featured · {formatLabel(note.data.contentType)}</p>
-    <h1><a href={noteHref(note.id)}>{note.data.title}</a></h1>
+    <h1 class={headlineSize}><a href={noteHref(note.id)}>{note.data.title}</a></h1>
     <p class="lead-story__dek">{note.data.description}</p>
     <div class="story-byline">
       <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
