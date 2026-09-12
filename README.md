@@ -3,7 +3,7 @@
 Kontrapuntal is an independent editorial publication for essays, reflections, and quick notes.
 
 Built with Astro and deployed on Vercel. Public pages are static; Decap CMS writes Markdown and
-author JSON to the private GitHub repository through pull requests.
+author JSON directly to the private GitHub repository's `main` branch.
 
 ## Development
 

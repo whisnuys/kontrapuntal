@@ -72,8 +72,8 @@ if (existsSync(configPath)) {
   assert(config.backend?.base_url === 'https://kontrapuntal.whisnuys.com', 'CMS OAuth base URL must be canonical.');
   assert(config.backend?.auth_endpoint === '/api/cms/auth', 'CMS OAuth endpoint is incorrect.');
   assert(config.backend?.auth_scope === 'repo', 'CMS must request repo scope for the private repository.');
-  assert(config.backend?.squash_merges === true, 'CMS publishing must squash merge editorial pull requests.');
-  assert(config.publish_mode === 'editorial_workflow', 'CMS must use editorial workflow.');
+  assert(!('squash_merges' in (config.backend ?? {})), 'CMS must commit content directly instead of merging pull requests.');
+  assert(!('publish_mode' in config), 'CMS must commit content directly to main.');
   assert(config.local_backend === true, 'CMS local backend must remain available for local authoring.');
   assert(!config.media_folder, 'CMS must not stage new media in the Git repository.');
   assert(!config.public_folder, 'CMS must use complete Cloudinary URLs.');

@@ -5,7 +5,6 @@ backend:
   base_url: https://kontrapuntal.whisnuys.com
   auth_endpoint: /api/cms/auth
   auth_scope: repo
-  squash_merges: true
   preview_context: Vercel
   commit_messages:
     create: "content: create {{collection}} {{slug}}"
@@ -15,7 +14,6 @@ backend:
     deleteMedia: "content: delete {{path}}"
     openAuthoring: "content: {{message}}"
 
-publish_mode: editorial_workflow
 local_backend: true
 site_url: https://kontrapuntal.whisnuys.com
 display_url: https://kontrapuntal.whisnuys.com
