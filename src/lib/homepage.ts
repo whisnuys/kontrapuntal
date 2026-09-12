@@ -47,7 +47,7 @@ export function selectHomepageContent(notes: readonly NoteSummary[]): HomepageSe
 
   const topicGroups = HOMEPAGE_TOPIC_PALETTE.flatMap(({ topic }) => {
     const noteIds = topics.get(topic) ?? [];
-    return noteIds.length >= 3 ? [{ topic, noteIds: noteIds.slice(0, 3) }] : [];
+    return noteIds.length > 0 ? [{ topic, noteIds: noteIds.slice(0, 3) }] : [];
   });
 
   return {

@@ -33,12 +33,14 @@ const topicStyle = `--topic-band-bg: ${palette?.background ?? '#20211D'}; --topi
       </a>
     </div>
   </header>
-  <div class="topic-band__grid">
+  <div class:list={['topic-band__grid', { 'topic-band__grid--solo': supporting.length === 0 }]}>
     {lead && <HomepageStoryCard note={lead} variant="prominent" index={0} />}
-    <div class="topic-band__supporting">
-      {supporting.map((note, noteIndex) => (
-        <HomepageStoryCard note={note} index={noteIndex + 1} />
-      ))}
-    </div>
+    {supporting.length > 0 && (
+      <div class="topic-band__supporting">
+        {supporting.map((note, noteIndex) => (
+          <HomepageStoryCard note={note} index={noteIndex + 1} />
+        ))}
+      </div>
+    )}
   </div>
 </section>
