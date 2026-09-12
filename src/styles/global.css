@@ -977,10 +977,6 @@ select {
   border-left: 1px solid var(--topic-band-rule);
 }
 
-.topic-band__grid--solo {
-  grid-template-columns: minmax(0, 1fr);
-}
-
 .topic-band__supporting {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

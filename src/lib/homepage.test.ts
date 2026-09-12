@@ -49,8 +49,6 @@ describe('selectHomepageContent', () => {
       'older-feature',
     ]);
     assert.deepEqual(result.topicGroups, [
-      { topic: 'attention', noteIds: ['older-feature'] },
-      { topic: 'books', noteIds: ['second', 'third'] },
       { topic: 'technology', noteIds: ['newest', 'third', 'fourth'] },
     ]);
     assert.deepEqual(input.map(({ id }) => id), originalIds);
@@ -71,7 +69,7 @@ describe('selectHomepageContent', () => {
     });
   });
 
-  test('returns eligible homepage topics in editorial order with up to three cards each', () => {
+  test('returns all eight homepage topics in editorial order with three cards each', () => {
     const topics = [
       'attention',
       'craft',
@@ -92,14 +90,5 @@ describe('selectHomepageContent', () => {
 
     assert.deepEqual(result.topicGroups.map(({ topic }) => topic), topics);
     assert.ok(result.topicGroups.every(({ noteIds }) => noteIds.length === 3));
-  });
-
-  test('returns a topic band when it has one published note', () => {
-    const result = selectHomepageContent([note('book', 0, ['books']), note('society', 1, ['society'])]);
-
-    assert.deepEqual(result.topicGroups, [
-      { topic: 'books', noteIds: ['book'] },
-      { topic: 'society', noteIds: ['society'] },
-    ]);
   });
 });

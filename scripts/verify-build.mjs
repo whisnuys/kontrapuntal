@@ -162,8 +162,8 @@ if (existsSync(join(rootPath, 'index.html'))) {
   for (const [index, topicBand] of topicBands.entries()) {
     const storyCount = (topicBand[1].match(/<article\b/g) ?? []).length;
     assert(
-      storyCount >= 1 && storyCount <= 3,
-      `Homepage topic/category band ${index + 1} has ${storyCount} stories; expected one to three.`,
+      storyCount === 3,
+      `Homepage topic/category band ${index + 1} has ${storyCount} stories; expected exactly 3.`,
     );
   }
   const homepageCards = [...homepage.matchAll(/<article[^>]*class="homepage-card[^"]*"[^>]*>([\s\S]*?)<\/article>/g)];
