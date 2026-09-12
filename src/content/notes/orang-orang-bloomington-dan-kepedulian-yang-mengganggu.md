@@ -13,6 +13,7 @@ topics:
   - society
 featured: true
 heroImage: https://res.cloudinary.com/c8tgycuw/image/upload/v1789210277/IMG_1099.jpg
+heroAlt: Orang-Orang Bloomington Books
 source:
   type: book
   title: Orang-Orang Bloomington
