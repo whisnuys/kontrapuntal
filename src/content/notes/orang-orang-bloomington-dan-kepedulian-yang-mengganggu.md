@@ -1,6 +1,7 @@
 ---
-title: "Orang-Orang Bloomington dan Kepedulian yang Mengganggu"
-description: "Membaca kumpulan cerpen Budi Darma sebagai kisah tentang kesepian dan hasrat ikut campur yang kerap menyamar sebagai kepedulian."
+title: Orang-Orang Bloomington dan Kepedulian yang Mengganggu
+description: Membaca kumpulan cerpen Budi Darma sebagai kisah tentang kesepian
+  dan hasrat ikut campur yang kerap menyamar sebagai kepedulian.
 authors:
   - whisnu-ys
 publishedAt: 2026-09-12
@@ -11,12 +12,12 @@ topics:
   - books
   - society
 featured: true
+heroImage: https://res.cloudinary.com/c8tgycuw/image/upload/v1789210277/IMG_1099.jpg
 source:
   type: book
-  title: "Orang-Orang Bloomington"
-  creator: "Budi Darma"
+  title: Orang-Orang Bloomington
+  creator: Budi Darma
 ---
-
 Hal yang paling mengganggu saya dalam *Orang-Orang Bloomington* datang dari tokoh-tokoh yang merasa berhak mengetahui hidup orang lain. Mereka memperhatikan tetangga, menilai kebiasaan orang asing, lalu menyusun kesimpulan dari potongan informasi yang mereka punya. Perhatian itu kadang tampak seperti kepedulian. Sedikit demi sedikit, ia berubah menjadi kecurigaan dan campur tangan.
 
 Budi Darma menghimpun tujuh cerpen yang berlatarkan Bloomington, Indiana. Kota kecil itu mempertemukan para tokohnya melalui rumah sewaan, jalan, tempat kerja, atau hubungan bertetangga. Mereka berada cukup dekat untuk saling mengawasi, tetapi terlalu sibuk dengan prasangka sendiri untuk sungguh-sungguh mengenal satu sama lain.
