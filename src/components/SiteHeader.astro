@@ -15,9 +15,9 @@ const primaryNavigation = [
   { href: '/topics', label: 'Topics' },
   { href: '/about', label: 'About' },
 ];
-const homepageTopics = ['technology', 'society', 'media', 'learning'];
 const notes = await getDiscoverableNotes();
 const navigationTopics = selectNavigationTopics(notes.map(toNoteSummary));
+const homepageTopics = navigationTopics.featured;
 const isHomepage = currentPath === '/';
 const isCurrent = (href: string) =>
   href === '/' ? currentPath === href : currentPath === href || currentPath.startsWith(`${href}/`);
