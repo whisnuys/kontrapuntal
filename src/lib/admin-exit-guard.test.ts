@@ -4,7 +4,7 @@ import { runInNewContext } from 'node:vm';
 import test from 'node:test';
 
 const projectRoot = new URL('../../', import.meta.url);
-const guardSource = readFileSync(new URL('public/admin/exit-guard.js', projectRoot), 'utf8');
+const guardSource = readFileSync(new URL('public/nulis/exit-guard.js', projectRoot), 'utf8');
 
 type BeforeUnloadEvent = { returnValue?: string };
 type Listener = (event: BeforeUnloadEvent) => unknown;
@@ -80,7 +80,7 @@ test('a clean Decap beforeunload listener does not trigger the custom exit guard
   assert.equal(guard.isDirty(), false);
 });
 
-test('only an ordinary link that leaves the admin document uses the custom dialog', () => {
+test('only an ordinary link that leaves the editor document uses the custom dialog', () => {
   const { guard } = loadGuard();
   const ordinaryClick = {
     button: 0,
@@ -96,7 +96,7 @@ test('only an ordinary link that leaves the admin document uses the custom dialo
   );
   assert.equal(
     guard.shouldGuardNavigation(
-      { href: 'https://kontrapuntal.whisnuys.com/admin/#/collections/notes' },
+      { href: 'https://kontrapuntal.whisnuys.com/nulis/#/collections/notes' },
       ordinaryClick,
     ),
     false,

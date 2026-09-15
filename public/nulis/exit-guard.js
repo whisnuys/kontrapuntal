@@ -54,14 +54,14 @@
     }
 
     const current = new URL(
-      window.location?.href || 'https://kontrapuntal.whisnuys.com/admin/',
+      window.location?.href || 'https://kontrapuntal.whisnuys.com/nulis/',
     );
     const destination = new URL(anchor.href, current);
-    const staysInAdmin =
+    const staysInEditor =
       destination.origin === current.origin &&
-      (destination.pathname === '/admin' || destination.pathname.startsWith('/admin/'));
+      (destination.pathname === '/nulis' || destination.pathname.startsWith('/nulis/'));
 
-    return !staysInAdmin;
+    return !staysInEditor;
   }
 
   window.KontrapuntalExitGuard = { isDirty, shouldGuardNavigation };

@@ -32,14 +32,16 @@ const requiredFiles = [
   'sitemap-index.xml',
   'sitemap-0.xml',
   'robots.txt',
-  'admin/index.html',
-  'admin/config.yml',
-  'admin/init.js',
-  'admin/preview.css',
+  'nulis/index.html',
+  'nulis/config.yml',
+  'nulis/init.js',
+  'nulis/preview.css',
 ];
 
 assert(existsSync(rootPath), '.vercel/output/static/ is missing; run npm run build first.');
 for (const file of requiredFiles) assert(existsSync(join(rootPath, file)), `Missing generated route: ${file}`);
+assert(!existsSync(join(rootPath, 'admin/index.html')), 'The old /admin editor route must not be generated.');
+assert(!existsSync(join(rootPath, 'admin/config.yml')), 'The old /admin CMS assets must not be generated.');
 
 if (existsSync(rootPath)) {
   const files = collectTextFiles(rootPath).filter((file) => /\.(?:html|xml|txt|js|css)$/.test(file));
@@ -533,7 +535,7 @@ if (existsSync(join(rootPath, 'notes/index.html'))) {
 if (existsSync(join(rootPath, 'robots.txt'))) {
   const robots = read('robots.txt');
   assert(robots.includes('/sitemap-index.xml'), 'robots.txt does not advertise the sitemap index.');
-  assert(robots.includes('Disallow: /admin/'), 'robots.txt does not disallow the CMS editor.');
+  assert(robots.includes('Disallow: /nulis/'), 'robots.txt does not disallow the CMS editor.');
   assert(robots.includes('Disallow: /api/cms/'), 'robots.txt does not disallow CMS OAuth routes.');
 }
 

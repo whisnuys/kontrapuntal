@@ -21,7 +21,7 @@ in a second terminal:
 npm run cms:local
 ```
 
-Then open `http://localhost:4321/admin/`.
+Then open `http://localhost:4321/nulis/`.
 
 The CMS **Topics** collection contains the selectable topics for Notes. Add a topic there to make it
 available in the Notes editor. You can edit a topic's display name without changing the lowercase

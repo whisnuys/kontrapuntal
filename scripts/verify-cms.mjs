@@ -7,10 +7,10 @@ import { NOTE_STATUSES } from '../src/lib/content-policy.ts';
 import { collectCollectionFiles } from './verify-cms-utils.mjs';
 
 const rootPath = new URL('../', import.meta.url).pathname;
-const configPath = join(rootPath, 'public/admin/config.yml');
-const adminInitPath = join(rootPath, 'public/admin/init.js');
-const previewScriptPath = join(rootPath, 'public/admin/preview.js');
-const adminRoutePath = join(rootPath, 'src/pages/admin/index.astro');
+const configPath = join(rootPath, 'public/nulis/config.yml');
+const adminInitPath = join(rootPath, 'public/nulis/init.js');
+const previewScriptPath = join(rootPath, 'public/nulis/preview.js');
+const adminRoutePath = join(rootPath, 'src/pages/nulis/index.astro');
 const notesPath = join(rootPath, 'src/content/notes');
 const authorsPath = join(rootPath, 'src/content/authors');
 const topicsPath = join(rootPath, 'src/content/topics');
@@ -29,15 +29,16 @@ function optionValues(options) {
   return options?.map((option) => (typeof option === 'string' ? option : option.value));
 }
 
-assert(existsSync(configPath), 'Missing public/admin/config.yml.');
-assert(existsSync(adminInitPath), 'Missing public/admin/init.js.');
-assert(existsSync(previewScriptPath), 'Missing public/admin/preview.js.');
-assert(existsSync(adminRoutePath), 'Missing Astro /admin entry route.');
+assert(existsSync(configPath), 'Missing public/nulis/config.yml.');
+assert(existsSync(adminInitPath), 'Missing public/nulis/init.js.');
+assert(existsSync(previewScriptPath), 'Missing public/nulis/preview.js.');
+assert(existsSync(adminRoutePath), 'Missing Astro /nulis entry route.');
+assert(!existsSync(join(rootPath, 'src/pages/admin/index.astro')), 'The old /admin editor route must be removed.');
 
 if (existsSync(adminRoutePath)) {
   const adminIndex = readFileSync(adminRoutePath, 'utf8');
-  assert(adminIndex.includes('<base href="/admin/"'), 'Admin must define a stable base URL for config loading.');
-  assert(adminIndex.includes('src="/admin/preview.js"'), 'Admin must load its Notes preview template.');
+  assert(adminIndex.includes('<base href="/nulis/"'), 'Editor must define a stable base URL for config loading.');
+  assert(adminIndex.includes('src="/nulis/preview.js"'), 'Editor must load its Notes preview template.');
   assert(
     adminIndex.includes('https://unpkg.com/decap-cms@3.15.1/dist/decap-cms.js'),
     'Admin must load the pinned Decap CMS 3.15.1 bundle.',
@@ -62,7 +63,7 @@ if (existsSync(previewScriptPath)) {
 
 if (existsSync(adminInitPath)) {
   const adminInit = readFileSync(adminInitPath, 'utf8');
-  assert(adminInit.includes("CMS.registerPreviewStyle('/admin/preview.css')"), 'Admin must load its article preview stylesheet.');
+  assert(adminInit.includes("CMS.registerPreviewStyle('/nulis/preview.css')"), 'Editor must load its article preview stylesheet.');
 }
 
 if (existsSync(configPath)) {
