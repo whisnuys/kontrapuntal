@@ -19,7 +19,7 @@ const searchableText = (note: (typeof notes)[number]) =>
     .toLowerCase();
 ---
 
-<BaseLayout title="Notes" description="Browse every published Kontrapuntal note by format, topic, or phrase.">
+<BaseLayout title="Notes" description="Browse every published Kontrapuntal note by author, format, topic, or phrase.">
   <div data-layout="magazine-index">
       <header class="page-header">
     <p class="eyebrow">The complete index</p>
@@ -41,6 +41,7 @@ const searchableText = (note: (typeof notes)[number]) =>
         <div
           data-filter-item
           data-search={searchableText(note)}
+          data-authors={note.data.authors.map((author) => author.id).join('|')}
           data-format={note.data.format}
           data-topics={note.data.topics.join('|')}
         >
@@ -84,14 +85,17 @@ const searchableText = (note: (typeof notes)[number]) =>
       const params = new URLSearchParams();
       for (const [key, value] of data.entries()) params.set(key, String(value));
       const query = (params.get('q') ?? '').trim().toLowerCase();
+      const author = params.get('author') ?? '';
       const topic = params.get('topic') ?? '';
       const format = params.get('format') ?? '';
       let visible = 0;
 
       cards.forEach((card) => {
+        const authors = (card.dataset.authors ?? '').split('|');
         const topics = (card.dataset.topics ?? '').split('|');
         const matches =
           (!query || card.dataset.search?.includes(query)) &&
+          (!author || authors.includes(author)) &&
           (!topic || topics.includes(topic)) &&
           (!format || card.dataset.format === format);
         card.hidden = !matches;

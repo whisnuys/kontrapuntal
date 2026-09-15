@@ -1,5 +1,5 @@
 ---
-import { getDiscoverableNotes, getFormatNames, getTopicNames, toNoteSummary } from '../lib/content.ts';
+import { getAuthorNames, getDiscoverableNotes, getFormatNames, getTopicNames, toNoteSummary } from '../lib/content.ts';
 import { selectNavigationTopics } from '../lib/navigation.ts';
 import { formatLabel, topicHref } from '../lib/presentation.ts';
 
@@ -15,6 +15,11 @@ const primaryNavigation = [
   { href: '/about', label: 'About' },
 ];
 const notes = await getDiscoverableNotes();
+const authorNames = await getAuthorNames();
+const publishedAuthorIds = [...new Set(notes.flatMap((note) => note.data.authors.map((author) => author.id)))];
+const publishedAuthors = publishedAuthorIds
+  .map((id) => ({ id, name: authorNames.get(id) ?? formatLabel(id) }))
+  .sort((left, right) => left.name.localeCompare(right.name));
 const topicNames = await getTopicNames();
 const formatNames = await getFormatNames();
 const topicName = (topic: string) => topicNames.get(topic) ?? formatLabel(topic);
@@ -125,6 +130,13 @@ const isCurrentTopic = (topic: string) => currentPath === topicHref(topic);
       <label class="filter-field filter-field--search">
         <span>Search</span>
         <input type="search" name="q" placeholder="Title, topic, or source" autocomplete="off" />
+      </label>
+      <label class="filter-field">
+        <span>Author</span>
+        <select name="author">
+          <option value="">All authors</option>
+          {publishedAuthors.map(({ id, name }) => <option value={id}>{name}</option>)}
+        </select>
       </label>
       <label class="filter-field">
         <span>Topic</span>

@@ -1428,7 +1428,7 @@ select {
 
 .note-filters {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   margin-top: var(--space-3);
   border: 1px solid var(--rule);
@@ -1900,7 +1900,7 @@ select {
   }
 
   .note-filters {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .filter-field--search,
@@ -2349,6 +2349,10 @@ select {
 
   .filter-field--search,
   .note-filter-actions {
+    grid-column: 1 / -1;
+  }
+
+  .filter-field:nth-of-type(4) {
     grid-column: 1 / -1;
   }
 

@@ -10,6 +10,11 @@ import {
 export type NoteEntry = CollectionEntry<'notes'>;
 export type LibraryEntry = CollectionEntry<'library'>;
 
+export async function getAuthorNames(): Promise<Map<string, string>> {
+  const authors = await getCollection('authors');
+  return new Map(authors.map((author) => [author.id, author.data.name]));
+}
+
 export async function getTopicNames(): Promise<Map<string, string>> {
   const topics = await getCollection('topics');
   return new Map(topics.map((topic) => [topic.id, topic.data.name]));

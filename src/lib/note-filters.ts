@@ -2,6 +2,7 @@ export interface FilterableNote {
   id: string;
   title: string;
   description: string;
+  authors: string[];
   format: string;
   topics: string[];
   source?: {
@@ -14,6 +15,7 @@ export interface FilterableNote {
 
 export interface NoteFilters {
   q: string;
+  author: string;
   topic: string;
   format: string;
 }
@@ -23,6 +25,7 @@ export function parseNoteFilters(params: URLSearchParams): NoteFilters {
 
   return {
     q: params.get('q')?.trim().toLowerCase() ?? '',
+    author: params.get('author')?.trim().toLowerCase() ?? '',
     topic: params.get('topic')?.trim().toLowerCase() ?? '',
     format,
   };
@@ -46,6 +49,7 @@ export function filterNotes(notes: readonly FilterableNote[], filters: NoteFilte
 
     return (
       (!query || searchableText.includes(query)) &&
+      (!filters.author || note.authors.includes(filters.author)) &&
       (!filters.topic || note.topics.includes(filters.topic)) &&
       (!filters.format || note.format === filters.format)
     );

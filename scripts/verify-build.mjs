@@ -476,7 +476,7 @@ if (existsSync(join(rootPath, 'notes/index.html'))) {
       notesPage.includes('aria-labelledby="notes-filter-heading"'),
     'Notes page is missing its labelled native filter dialog.',
   );
-  for (const field of ['q', 'topic', 'format']) {
+  for (const field of ['q', 'author', 'topic', 'format']) {
     assert(
       notesPage.includes(`name="${field}"`),
       `Notes filter dialog is missing its ${field} field.`,
@@ -518,12 +518,13 @@ if (existsSync(join(rootPath, 'notes/index.html'))) {
       'Notes filtering must mark one- and two-card final rows for their grid dividers.',
     );
     assert(
-      notesStylesheet.includes('.note-filters{grid-template-columns:repeat(2,minmax(0,1fr))') &&
-        tabletMedia.includes('.note-filters{grid-template-columns:repeat(2,minmax(0,1fr))'),
-      'Tablet Notes filters must keep both select fields balanced.',
+      notesStylesheet.includes('.note-filters{grid-template-columns:repeat(3,minmax(0,1fr))') &&
+        tabletMedia.includes('.note-filters{grid-template-columns:repeat(3,minmax(0,1fr))'),
+      'Tablet Notes filters must keep all three select fields balanced.',
     );
     assert(
-      mobileMedia.includes('.note-filters{grid-template-columns:repeat(2,minmax(0,1fr))'),
+      mobileMedia.includes('.note-filters{grid-template-columns:repeat(2,minmax(0,1fr))') &&
+        mobileMedia.includes('.filter-field:nth-of-type(4){grid-column:1/-1}'),
       'Mobile Notes filters must use a compact two-column select layout.',
     );
   }
