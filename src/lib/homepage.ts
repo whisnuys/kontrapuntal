@@ -11,7 +11,7 @@ export const HOMEPAGE_TOPIC_PALETTE = [
   { topic: 'learning', background: '#C9C9C9', foreground: '#151613' },
   { topic: 'media', background: '#6D4540', foreground: '#ECE5D8' },
   { topic: 'books', background: '#9BADA2', foreground: '#151613' },
-  { topic: 'games', background: '#8F8F8F', foreground: '#151613' },
+  { topic: 'game', background: '#8F8F8F', foreground: '#151613' },
   { topic: 'society', background: '#C85A51', foreground: '#151613' },
   { topic: 'technology', background: '#DBCD9F', foreground: '#151613' },
 ] as const;

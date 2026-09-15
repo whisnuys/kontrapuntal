@@ -52,6 +52,34 @@ collections:
     fields:
       - { label: Name, name: name, widget: string }
 
+  - name: topics
+    label: Topics
+    label_singular: Topic
+    folder: src/content/topics
+    extension: json
+    format: json
+    create: true
+    delete: false
+    identifier_field: name
+    slug: "{{slug}}"
+    summary: "{{name}}"
+    fields:
+      - { label: Name, name: name, widget: string }
+
+  - name: formats
+    label: Formats
+    label_singular: Format
+    folder: src/content/formats
+    extension: json
+    format: json
+    create: true
+    delete: false
+    identifier_field: name
+    slug: "{{slug}}"
+    summary: "{{name}}"
+    fields:
+      - { label: Name, name: name, widget: string }
+
   - name: notes
     label: Notes
     label_singular: Note
@@ -72,7 +100,7 @@ collections:
       - { label: Archived, field: status, pattern: archived }
     view_groups:
       - { label: Status, field: status }
-      - { label: Content type, field: contentType }
+      - { label: Format, field: format }
     fields:
       - { label: Title, name: title, widget: string }
       - { label: Description, name: description, widget: text }
@@ -110,31 +138,22 @@ collections:
           - { label: Draft, value: draft }
           - { label: Published, value: published }
           - { label: Archived, value: archived }
-      - label: Content type
-        name: contentType
-        widget: select
-        options:
-          - { label: Book, value: book }
-          - { label: Game, value: game }
-          - { label: Video, value: video }
-          - { label: Podcast, value: podcast }
-          - { label: Technology, value: technology }
-          - { label: Issue, value: issue }
-          - { label: Learning, value: learning }
-          - { label: Career, value: career }
-          - { label: Thought, value: thought }
       - label: Format
         name: format
-        widget: select
-        options:
-          - { label: Quick note, value: quick-note }
-          - { label: Reflection, value: reflection }
-          - { label: Essay, value: essay }
+        widget: relation
+        collection: formats
+        search_fields: [name]
+        display_fields: [name]
+        value_field: "{{slug}}"
       - label: Topics
         name: topics
-        widget: list
+        widget: relation
+        collection: topics
+        search_fields: [name]
+        display_fields: [name]
+        value_field: "{{slug}}"
+        multiple: true
         min: 1
-        field: { label: Topic, name: topic, widget: string }
       - { label: Featured, name: featured, widget: boolean, required: false, default: false }
       - label: Hero image
         name: heroImage

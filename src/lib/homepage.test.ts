@@ -15,7 +15,6 @@ const note = (
   description: `${id} description`,
   publishedAt: new Date(Date.UTC(2026, 7, 24 - daysAgo)),
   status: 'published',
-  contentType: 'technology',
   format: 'essay',
   topics,
   featured: false,
@@ -76,7 +75,7 @@ describe('selectHomepageContent', () => {
       'learning',
       'media',
       'books',
-      'games',
+      'game',
       'society',
       'technology',
     ];

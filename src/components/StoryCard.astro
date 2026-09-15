@@ -1,5 +1,5 @@
 ---
-import type { NoteEntry } from '../lib/content.ts';
+import { getFormatNames, getTopicNames, type NoteEntry } from '../lib/content.ts';
 import { formatDate, formatLabel, noteHref } from '../lib/presentation.ts';
 
 interface Props {
@@ -9,6 +9,11 @@ interface Props {
 
 const { note, index = 0 } = Astro.props;
 const href = noteHref(note.id);
+const topicNames = await getTopicNames();
+const formatNames = await getFormatNames();
+const primaryTopic = note.data.topics[0] ?? '';
+const primaryTopicName = topicNames.get(primaryTopic) ?? formatLabel(primaryTopic);
+const formatName = formatNames.get(note.data.format) ?? formatLabel(note.data.format);
 ---
 
 <article class="story-card" data-note-card data-note-reveal>
@@ -16,21 +21,21 @@ const href = noteHref(note.id);
     {typeof note.data.heroImage === 'string' ? (
       <img src={note.data.heroImage} alt={note.data.heroAlt ?? ''} width="1536" height="1024" loading="lazy" />
     ) : (
-      <span class="story-card__poster" data-subject={note.data.contentType} aria-hidden="true">
+      <span class="story-card__poster" data-topic={primaryTopic} aria-hidden="true">
         <span>{String(index + 1).padStart(2, '0')}</span>
-        <strong>{formatLabel(note.data.contentType)}</strong>
+        <strong>{primaryTopicName}</strong>
       </span>
     )}
   </a>
   <div class="story-card__body">
     <div class="story-card__meta">
-      <span>{formatLabel(note.data.contentType)}</span>
+      <span>{primaryTopicName}</span>
       <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
     </div>
     <h3><a href={href}>{note.data.title}</a></h3>
     <p>{note.data.description}</p>
     <div class="story-card__footer">
-      <span>{formatLabel(note.data.format)}</span>
+      <span>{formatName}</span>
       <a class="story-card__open" href={href} aria-label={`Read ${note.data.title}`}>
         <span aria-hidden="true">↗</span>
       </a>

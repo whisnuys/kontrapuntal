@@ -1130,13 +1130,13 @@ select {
   text-transform: uppercase;
 }
 
-.story-card__poster[data-subject="book"],
-.story-card__poster[data-subject="learning"] {
+.story-card__poster[data-topic="books"],
+.story-card__poster[data-topic="learning"] {
   background: #29271e;
 }
 
-.story-card__poster[data-subject="game"],
-.story-card__poster[data-subject="thought"] {
+.story-card__poster[data-topic="game"],
+.story-card__poster[data-topic="technology"] {
   background: #24261e;
 }
 
@@ -1428,7 +1428,7 @@ select {
 
 .note-filters {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1px;
   margin-top: var(--space-3);
   border: 1px solid var(--rule);
@@ -1900,7 +1900,7 @@ select {
   }
 
   .note-filters {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .filter-field--search,
@@ -2349,10 +2349,6 @@ select {
 
   .filter-field--search,
   .note-filter-actions {
-    grid-column: 1 / -1;
-  }
-
-  .filter-field:nth-of-type(4) {
     grid-column: 1 / -1;
   }
 

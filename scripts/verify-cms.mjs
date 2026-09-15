@@ -3,7 +3,7 @@ import { extname, join, relative, sep } from 'node:path';
 
 import { parse } from 'yaml';
 
-import { CONTENT_TYPES, NOTE_FORMATS, NOTE_STATUSES } from '../src/lib/content-policy.ts';
+import { NOTE_STATUSES } from '../src/lib/content-policy.ts';
 import { collectCollectionFiles } from './verify-cms-utils.mjs';
 
 const rootPath = new URL('../', import.meta.url).pathname;
@@ -13,6 +13,8 @@ const previewScriptPath = join(rootPath, 'public/admin/preview.js');
 const adminRoutePath = join(rootPath, 'src/pages/admin/index.astro');
 const notesPath = join(rootPath, 'src/content/notes');
 const authorsPath = join(rootPath, 'src/content/authors');
+const topicsPath = join(rootPath, 'src/content/topics');
+const formatsPath = join(rootPath, 'src/content/formats');
 const failures = [];
 
 function assert(condition, message) {
@@ -54,6 +56,8 @@ if (existsSync(previewScriptPath)) {
   assert(previewScript.includes("className: 'article-header'"), 'Notes preview must mirror the article header structure.');
   assert(previewScript.includes("className: 'reading-width article-body'"), 'Notes preview must mirror the article body structure.');
   assert(previewScript.includes('this.props.getAsset(heroImage)'), 'Notes preview must resolve media-library assets.');
+  assert(previewScript.includes("this.props.getCollection('topics')"), 'Notes preview must load editable topic names.');
+  assert(previewScript.includes("this.props.getCollection('formats')"), 'Notes preview must load editable format names.');
 }
 
 if (existsSync(adminInitPath)) {
@@ -65,6 +69,8 @@ if (existsSync(configPath)) {
   const config = parse(readFileSync(configPath, 'utf8'));
   const notes = config.collections?.find((collection) => collection.name === 'notes');
   const authors = config.collections?.find((collection) => collection.name === 'authors');
+  const topics = config.collections?.find((collection) => collection.name === 'topics');
+  const formats = config.collections?.find((collection) => collection.name === 'formats');
 
   assert(config.backend?.name === 'github', 'CMS backend must use GitHub.');
   assert(config.backend?.repo === 'whisnuys/kontrapuntal', 'CMS backend repository is incorrect.');
@@ -98,6 +104,16 @@ if (existsSync(configPath)) {
   assert(authors?.delete === false, 'CMS author deletion must be disabled.');
   assert(authors?.folder === 'src/content/authors', 'CMS Authors folder does not match Astro content.');
   assert(authors?.extension === 'json' && authors?.format === 'json', 'CMS Authors must remain JSON records.');
+  assert(topics, 'CMS is missing the Topics collection.');
+  assert(topics?.folder === 'src/content/topics', 'CMS Topics folder does not match Astro content.');
+  assert(topics?.create === true, 'CMS must allow creating new topics.');
+  assert(topics?.extension === 'json' && topics?.format === 'json', 'CMS Topics must remain JSON records.');
+  assert(field(topics?.fields, 'name')?.widget === 'string', 'CMS topic names must be editable.');
+  assert(formats, 'CMS is missing the Formats collection.');
+  assert(formats?.folder === 'src/content/formats', 'CMS Formats folder does not match Astro content.');
+  assert(formats?.create === true, 'CMS must allow creating new formats.');
+  assert(formats?.extension === 'json' && formats?.format === 'json', 'CMS Formats must remain JSON records.');
+  assert(field(formats?.fields, 'name')?.widget === 'string', 'CMS format names must be editable.');
 
   const authorField = field(notes?.fields, 'authors');
   assert(authorField?.widget === 'relation', 'Notes authors must use the relation widget.');
@@ -112,14 +128,16 @@ if (existsSync(configPath)) {
       JSON.stringify(NOTE_STATUSES),
     'CMS note statuses do not match the content schema.',
   );
-  assert(
-    JSON.stringify(optionValues(field(notes?.fields, 'contentType')?.options)) === JSON.stringify(CONTENT_TYPES),
-    'CMS content types do not match the content schema.',
-  );
-  assert(
-    JSON.stringify(optionValues(field(notes?.fields, 'format')?.options)) === JSON.stringify(NOTE_FORMATS),
-    'CMS note formats do not match the content schema.',
-  );
+  assert(!field(notes?.fields, 'contentType'), 'CMS Notes must not expose Content type.');
+  const formatField = field(notes?.fields, 'format');
+  assert(formatField?.widget === 'relation', 'Notes format must use the relation widget.');
+  assert(formatField?.collection === 'formats', 'Notes format must reference the Formats collection.');
+  assert(formatField?.value_field === '{{slug}}', 'Notes must persist stable format entry IDs.');
+  const topicsField = field(notes?.fields, 'topics');
+  assert(topicsField?.widget === 'relation', 'Notes topics must use the relation widget.');
+  assert(topicsField?.collection === 'topics', 'Notes topics must reference the Topics collection.');
+  assert(topicsField?.multiple === true && topicsField?.min === 1, 'Notes must require at least one topic.');
+  assert(topicsField?.value_field === '{{slug}}', 'Notes must persist stable topic entry IDs.');
   assert(field(notes?.fields, 'body')?.widget === 'richtext', 'CMS note body must use the rich-text editor.');
   assert(!field(notes?.fields, 'heroImage')?.media_library, 'Hero image must inherit the global Cloudinary library.');
   assert(field(notes?.fields, 'featured')?.required === false, 'Featured must remain optional.');
@@ -140,6 +158,30 @@ const authorIds = new Set(
     ? collectCollectionFiles(authorsPath, new Set(['.json'])).map((path) => entryId(path, authorsPath))
     : [],
 );
+const topicIds = new Set(
+  existsSync(topicsPath)
+    ? collectCollectionFiles(topicsPath, new Set(['.json'])).map((path) => entryId(path, topicsPath))
+    : [],
+);
+assert(topicIds.size > 0, 'CMS must have at least one topic option.');
+const formatIds = new Set(
+  existsSync(formatsPath)
+    ? collectCollectionFiles(formatsPath, new Set(['.json'])).map((path) => entryId(path, formatsPath))
+    : [],
+);
+assert(formatIds.size > 0, 'CMS must have at least one format option.');
+for (const path of existsSync(topicsPath)
+  ? collectCollectionFiles(topicsPath, new Set(['.json']))
+  : []) {
+  const topic = parse(readFileSync(path, 'utf8'));
+  assert(typeof topic?.name === 'string' && topic.name.trim(), `${relative(topicsPath, path)} must have a topic name.`);
+}
+for (const path of existsSync(formatsPath)
+  ? collectCollectionFiles(formatsPath, new Set(['.json']))
+  : []) {
+  const format = parse(readFileSync(path, 'utf8'));
+  assert(typeof format?.name === 'string' && format.name.trim(), `${relative(formatsPath, path)} must have a format name.`);
+}
 
 for (const path of existsSync(notesPath)
   ? collectCollectionFiles(notesPath, new Set(['.md', '.mdx']))
@@ -157,6 +199,13 @@ for (const path of existsSync(notesPath)
   for (const authorId of Array.isArray(authorReferences) ? authorReferences : []) {
     assert(authorIds.has(authorId), `${name} references missing author ${authorId}.`);
   }
+  const topicReferences = data?.topics;
+  assert(Array.isArray(topicReferences) && topicReferences.length >= 1, `${name} must reference at least one topic.`);
+  for (const topicId of Array.isArray(topicReferences) ? topicReferences : []) {
+    assert(topicIds.has(topicId), `${name} references missing topic ${topicId}.`);
+  }
+  assert(formatIds.has(data?.format), `${name} references missing format ${data?.format}.`);
+  assert(!('contentType' in (data ?? {})), `${name} still has Content type metadata.`);
 }
 
 if (failures.length > 0) {

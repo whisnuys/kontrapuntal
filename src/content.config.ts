@@ -2,7 +2,7 @@ import { defineCollection, reference } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-import { CONTENT_TYPES, NOTE_FORMATS, NOTE_STATUSES } from './lib/content-policy.ts';
+import { NOTE_STATUSES } from './lib/content-policy.ts';
 import { isApprovedStringImageSource } from './lib/media-policy.ts';
 import { isOptionalSourceEmpty, type OptionalSource } from './lib/source-policy.ts';
 
@@ -29,6 +29,20 @@ const authors = defineCollection({
   }),
 });
 
+const topics = defineCollection({
+  loader: glob({ base: './src/content/topics', pattern: '**/*.json' }),
+  schema: z.object({
+    name: z.string().min(1),
+  }),
+});
+
+const formats = defineCollection({
+  loader: glob({ base: './src/content/formats', pattern: '**/*.json' }),
+  schema: z.object({
+    name: z.string().min(1),
+  }),
+});
+
 const notes = defineCollection({
   loader: glob({ base: './src/content/notes', pattern: '**/*.{md,mdx}' }),
   schema: ({ image }) =>
@@ -40,8 +54,7 @@ const notes = defineCollection({
         publishedAt: z.coerce.date(),
         updatedAt: z.coerce.date().optional(),
         status: z.enum(NOTE_STATUSES),
-        contentType: z.enum(CONTENT_TYPES),
-        format: z.enum(NOTE_FORMATS),
+        format: z.string().min(1),
         topics: z.array(z.string().min(1)).min(1),
         featured: z.boolean().default(false),
         heroImage: z.union([stringImageSource, image()]).optional(),
@@ -92,4 +105,4 @@ const library = defineCollection({
       }),
 });
 
-export const collections = { authors, notes, library };
+export const collections = { authors, topics, formats, notes, library };

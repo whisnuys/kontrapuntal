@@ -6,7 +6,6 @@ authors:
   - whisnu-ys
 publishedAt: 2026-09-12
 status: published
-contentType: book
 format: essay
 topics:
   - books

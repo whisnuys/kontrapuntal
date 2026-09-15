@@ -5,7 +5,7 @@ import { getEntries, render } from 'astro:content';
 import SourceCard from '../../components/SourceCard.astro';
 import TopicLink from '../../components/TopicLink.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getRoutableNotes, type NoteEntry } from '../../lib/content.ts';
+import { getFormatNames, getRoutableNotes, type NoteEntry } from '../../lib/content.ts';
 import { estimateReadingMinutes } from '../../lib/content-policy.ts';
 import { formatAuthorNames, formatDate, formatLabel } from '../../lib/presentation.ts';
 
@@ -19,6 +19,7 @@ interface Props {
 }
 
 const { note } = Astro.props;
+const formatNames = await getFormatNames();
 const { Content } = await render(note);
 const authors = await getEntries(note.data.authors);
 const authorNames = authors.map((author) => author.data.name);
@@ -62,7 +63,7 @@ const jsonLd = {
 
   <article class="article" data-layout="article-reading">
     <header class="article-header">
-      <p class="eyebrow">{formatLabel(note.data.contentType)} · {formatLabel(note.data.format)}</p>
+      <p class="eyebrow">{formatNames.get(note.data.format) ?? formatLabel(note.data.format)}</p>
       <h1>{note.data.title}</h1>
       <p class="article-dek">{note.data.description}</p>
       <div class="article-meta">

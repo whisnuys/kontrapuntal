@@ -10,6 +10,16 @@ import {
 export type NoteEntry = CollectionEntry<'notes'>;
 export type LibraryEntry = CollectionEntry<'library'>;
 
+export async function getTopicNames(): Promise<Map<string, string>> {
+  const topics = await getCollection('topics');
+  return new Map(topics.map((topic) => [topic.id, topic.data.name]));
+}
+
+export async function getFormatNames(): Promise<Map<string, string>> {
+  const formats = await getCollection('formats');
+  return new Map(formats.map((format) => [format.id, format.data.name]));
+}
+
 export function toNoteSummary(entry: NoteEntry): NoteSummary {
   return {
     id: entry.id,
@@ -18,7 +28,6 @@ export function toNoteSummary(entry: NoteEntry): NoteSummary {
     publishedAt: entry.data.publishedAt,
     updatedAt: entry.data.updatedAt,
     status: entry.data.status,
-    contentType: entry.data.contentType,
     format: entry.data.format,
     topics: entry.data.topics,
     featured: entry.data.featured,

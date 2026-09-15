@@ -1,20 +1,5 @@
 export const NOTE_STATUSES = ['draft', 'published', 'archived'] as const;
-export const CONTENT_TYPES = [
-  'book',
-  'game',
-  'video',
-  'podcast',
-  'technology',
-  'issue',
-  'learning',
-  'career',
-  'thought',
-] as const;
-export const NOTE_FORMATS = ['quick-note', 'reflection', 'essay'] as const;
-
 export type NoteStatus = (typeof NOTE_STATUSES)[number];
-export type ContentType = (typeof CONTENT_TYPES)[number];
-export type NoteFormat = (typeof NOTE_FORMATS)[number];
 
 export interface NoteSummary {
   id: string;
@@ -23,8 +8,7 @@ export interface NoteSummary {
   publishedAt: Date;
   updatedAt?: Date;
   status: NoteStatus;
-  contentType: ContentType;
-  format: NoteFormat;
+  format: string;
   topics: string[];
   featured?: boolean;
   source?: {

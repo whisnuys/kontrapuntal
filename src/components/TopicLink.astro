@@ -1,4 +1,5 @@
 ---
+import { getTopicNames } from '../lib/content.ts';
 import { topicHref } from '../lib/presentation.ts';
 
 interface Props {
@@ -6,6 +7,7 @@ interface Props {
 }
 
 const { topic } = Astro.props;
+const topicNames = await getTopicNames();
 ---
 
-<a class="topic-link" href={topicHref(topic)}>{topic}</a>
+<a class="topic-link" href={topicHref(topic)}>{topicNames.get(topic) ?? topic}</a>

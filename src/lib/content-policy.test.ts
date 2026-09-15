@@ -17,7 +17,6 @@ const note = (overrides: Partial<NoteSummary> = {}): NoteSummary => ({
   description: 'A compact description.',
   publishedAt: new Date('2026-08-20T00:00:00Z'),
   status: 'published',
-  contentType: 'technology',
   format: 'essay',
   topics: ['technology'],
   featured: false,

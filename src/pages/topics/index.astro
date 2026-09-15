@@ -1,9 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getDiscoverableNotes } from '../../lib/content.ts';
+import { getDiscoverableNotes, getTopicNames } from '../../lib/content.ts';
 import { formatLabel, topicHref } from '../../lib/presentation.ts';
 
 const notes = await getDiscoverableNotes();
+const topicNames = await getTopicNames();
 const topics = [...new Set(notes.flatMap(({ data }) => data.topics))]
   .map((topic) => ({
     name: topic,
@@ -26,7 +27,7 @@ const topics = [...new Set(notes.flatMap(({ data }) => data.topics))]
     {topics.map(({ name, notes: topicNotes }, index) => (
       <a class="topic-index-item" href={topicHref(name)}>
         <span>{String(index + 1).padStart(2, '0')}</span>
-        <h2>{formatLabel(name)}</h2>
+        <h2>{topicNames.get(name) ?? formatLabel(name)}</h2>
         <p>{topicNotes.length} {topicNotes.length === 1 ? 'note' : 'notes'}</p>
         <span aria-hidden="true">↗</span>
       </a>

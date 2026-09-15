@@ -1,6 +1,6 @@
 # Kontrapuntal
 
-Kontrapuntal is an independent editorial publication for essays, reflections, and quick notes.
+Kontrapuntal is an independent editorial publication for thoughts, essays, reviews, and issue notes.
 
 Built with Astro and deployed on Vercel. Public pages are static; Decap CMS writes Markdown and
 author JSON directly to the private GitHub repository's `main` branch.
@@ -22,6 +22,15 @@ npm run cms:local
 ```
 
 Then open `http://localhost:4321/admin/`.
+
+The CMS **Topics** collection contains the selectable topics for Notes. Add a topic there to make it
+available in the Notes editor. You can edit a topic's display name without changing the lowercase
+value already saved in notes; its filename is the stable value. Existing topic entries cannot be
+deleted through the CMS.
+
+The CMS **Formats** collection works the same way: add a format there to make it selectable for
+Notes. The initial formats are Thought, Essay, Review, and Issue. Each note has one format and one
+or more topics; Notes no longer use a separate Content type.
 
 ## Verification
 

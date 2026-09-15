@@ -1,7 +1,7 @@
 ---
 import StoryCard from '../../components/StoryCard.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getDiscoverableNotes, type NoteEntry } from '../../lib/content.ts';
+import { getDiscoverableNotes, getTopicNames, type NoteEntry } from '../../lib/content.ts';
 import { getHomepageTopicPalette } from '../../lib/homepage.ts';
 import { formatLabel } from '../../lib/presentation.ts';
 
@@ -20,10 +20,12 @@ interface Props {
 }
 
 const { topic, notes } = Astro.props;
+const topicNames = await getTopicNames();
+const topicName = topicNames.get(topic) ?? formatLabel(topic);
 const topicPalette = getHomepageTopicPalette(topic);
 ---
 
-<BaseLayout title={formatLabel(topic)} description={`Published Kontrapuntal notes about ${formatLabel(topic)}.`}>
+<BaseLayout title={topicName} description={`Published Kontrapuntal notes about ${topicName}.`}>
   <div data-layout="topic-directory">
   <header
     class="page-header topic-page-header"
@@ -31,7 +33,7 @@ const topicPalette = getHomepageTopicPalette(topic);
   >
     <p class="eyebrow">Topic · {notes.length} {notes.length === 1 ? 'note' : 'notes'}</p>
     <div class="page-header__grid">
-      <h1>{formatLabel(topic)}</h1>
+      <h1>{topicName}</h1>
       <p>A chronological thread through every published note tagged with this subject.</p>
     </div>
   </header>

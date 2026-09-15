@@ -14,7 +14,6 @@ const note = (
   description: `${id} description`,
   publishedAt: new Date('2026-08-24T00:00:00Z'),
   status: 'published',
-  contentType: 'technology',
   format: 'essay',
   topics,
   featured: false,

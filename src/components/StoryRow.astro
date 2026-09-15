@@ -1,5 +1,5 @@
 ---
-import type { NoteEntry } from '../lib/content.ts';
+import { getTopicNames, type NoteEntry } from '../lib/content.ts';
 import { formatDate, formatLabel, noteHref } from '../lib/presentation.ts';
 import TopicLink from './TopicLink.astro';
 
@@ -9,11 +9,13 @@ interface Props {
 }
 
 const { note, compact = false } = Astro.props;
+const topicNames = await getTopicNames();
+const primaryTopic = note.data.topics[0] ?? '';
 ---
 
 <article class:list={['story-row', { 'story-row--compact': compact }]} data-note-card data-note-reveal>
   <div class="story-row__meta">
-    <span>{formatLabel(note.data.contentType)}</span>
+    <span>{topicNames.get(primaryTopic) ?? formatLabel(primaryTopic)}</span>
     <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
   </div>
   <div class="story-row__body">

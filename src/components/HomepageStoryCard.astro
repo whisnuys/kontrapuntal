@@ -1,5 +1,5 @@
 ---
-import type { NoteEntry } from '../lib/content.ts';
+import { getTopicNames, type NoteEntry } from '../lib/content.ts';
 import { formatDate, formatLabel, noteHref } from '../lib/presentation.ts';
 
 interface Props {
@@ -10,6 +10,8 @@ interface Props {
 
 const { note, variant = 'compact' } = Astro.props;
 const href = noteHref(note.id);
+const topicNames = await getTopicNames();
+const primaryTopic = note.data.topics[0] ?? '';
 ---
 
 <article class:list={['homepage-card', `homepage-card--${variant}`]} data-note-reveal>
@@ -34,7 +36,7 @@ const href = noteHref(note.id);
   </a>
   <div class="homepage-card__body">
     <p class="homepage-card__meta">
-      <span>{formatLabel(note.data.contentType)}</span>
+      <span>{topicNames.get(primaryTopic) ?? formatLabel(primaryTopic)}</span>
       <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
     </p>
     <h3><a href={href}>{note.data.title}</a></h3>

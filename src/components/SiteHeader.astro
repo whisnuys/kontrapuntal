@@ -1,6 +1,5 @@
 ---
-import { getDiscoverableNotes, toNoteSummary } from '../lib/content.ts';
-import { CONTENT_TYPES, NOTE_FORMATS } from '../lib/content-policy.ts';
+import { getDiscoverableNotes, getFormatNames, getTopicNames, toNoteSummary } from '../lib/content.ts';
 import { selectNavigationTopics } from '../lib/navigation.ts';
 import { formatLabel, topicHref } from '../lib/presentation.ts';
 
@@ -16,6 +15,9 @@ const primaryNavigation = [
   { href: '/about', label: 'About' },
 ];
 const notes = await getDiscoverableNotes();
+const topicNames = await getTopicNames();
+const formatNames = await getFormatNames();
+const topicName = (topic: string) => topicNames.get(topic) ?? formatLabel(topic);
 const navigationTopics = selectNavigationTopics(notes.map(toNoteSummary));
 const homepageTopics = navigationTopics.featured;
 const isHomepage = currentPath === '/';
@@ -32,7 +34,7 @@ const isCurrentTopic = (topic: string) => currentPath === topicHref(topic);
   >
     {homepageTopics.map((topic) => (
       <a href={topicHref(topic)} aria-current={isCurrentTopic(topic) ? 'page' : undefined}>
-        {formatLabel(topic)}
+        {topicName(topic)}
       </a>
     ))}
   </nav>
@@ -94,7 +96,7 @@ const isCurrentTopic = (topic: string) => currentPath === topicHref(topic);
       <div>
         {navigationTopics.all.map((topic) => (
           <a href={topicHref(topic)} aria-current={isCurrentTopic(topic) ? 'page' : undefined}>
-            {formatLabel(topic)}
+            {topicName(topic)}
           </a>
         ))}
       </div>
@@ -125,24 +127,17 @@ const isCurrentTopic = (topic: string) => currentPath === topicHref(topic);
         <input type="search" name="q" placeholder="Title, topic, or source" autocomplete="off" />
       </label>
       <label class="filter-field">
-        <span>Subject</span>
-        <select name="type">
-          <option value="">All subjects</option>
-          {CONTENT_TYPES.map((type) => <option value={type}>{formatLabel(type)}</option>)}
-        </select>
-      </label>
-      <label class="filter-field">
         <span>Topic</span>
         <select name="topic">
           <option value="">All topics</option>
-          {navigationTopics.all.map((topic) => <option value={topic}>{formatLabel(topic)}</option>)}
+          {navigationTopics.all.map((topic) => <option value={topic}>{topicName(topic)}</option>)}
         </select>
       </label>
       <label class="filter-field">
         <span>Format</span>
         <select name="format">
           <option value="">All formats</option>
-          {NOTE_FORMATS.map((format) => <option value={format}>{formatLabel(format)}</option>)}
+          {[...formatNames].map(([value, name]) => <option value={value}>{name}</option>)}
         </select>
       </label>
       <div class="note-filter-actions">

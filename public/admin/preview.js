@@ -42,7 +42,7 @@
 
   var NotesPreview = createClass({
     getInitialState: function getInitialState() {
-      return { authorNames: {} };
+      return { authorNames: {}, topicNames: {}, formatNames: {} };
     },
 
     componentDidMount: function componentDidMount() {
@@ -61,6 +61,32 @@
       }).catch(function ignoreCollectionError() {
         // Slug-based fallbacks keep the preview usable while a new author is unsaved.
       });
+
+      this.props.getCollection('topics').then(function mapTopics(topics) {
+        var names = {};
+        topics.forEach(function mapTopic(topic) {
+          var path = topic.get('path') || '';
+          var id = topic.get('slug') || path.split('/').pop().replace(/\.json$/, '');
+          var name = topic.getIn(['data', 'name']);
+          if (id && name) names[id] = name;
+        });
+        component.setState({ topicNames: names });
+      }).catch(function ignoreCollectionError() {
+        // Existing topic values remain readable while the collection loads.
+      });
+
+      this.props.getCollection('formats').then(function mapFormats(formats) {
+        var names = {};
+        formats.forEach(function mapFormat(format) {
+          var path = format.get('path') || '';
+          var id = format.get('slug') || path.split('/').pop().replace(/\.json$/, '');
+          var name = format.getIn(['data', 'name']);
+          if (id && name) names[id] = name;
+        });
+        component.setState({ formatNames: names });
+      }).catch(function ignoreCollectionError() {
+        // Format values remain readable while the collection loads.
+      });
     },
 
     render: function render() {
@@ -74,8 +100,7 @@
       var publishedAt = entry.getIn(['data', 'publishedAt']);
       var updatedAt = entry.getIn(['data', 'updatedAt']);
       var status = entry.getIn(['data', 'status']) || 'draft';
-      var contentType = entry.getIn(['data', 'contentType']) || 'thought';
-      var format = entry.getIn(['data', 'format']) || 'reflection';
+      var format = entry.getIn(['data', 'format']) || 'thought';
       var topics = valueToArray(entry.getIn(['data', 'topics']));
       var body = entry.getIn(['data', 'body']) || '';
       var heroImage = entry.getIn(['data', 'heroImage']);
@@ -98,14 +123,14 @@
             )
           : null,
         h('header', { className: 'article-header' },
-          h('p', { className: 'eyebrow' }, formatLabel(contentType) + ' · ' + formatLabel(format)),
+          h('p', { className: 'eyebrow' }, this.state.formatNames[format] || formatLabel(format)),
           h('h1', {}, title),
           h('p', { className: 'article-dek' }, description),
           h('div', { className: 'article-meta' }, metadata),
           h('div', { className: 'topic-list', 'aria-label': 'Topics' },
             topics.map(function renderTopic(topic) {
-              return h('span', { className: 'topic-link', key: topic }, topic);
-            }),
+              return h('span', { className: 'topic-link', key: topic }, this.state.topicNames[topic] || formatLabel(topic));
+            }, this),
           ),
         ),
         heroAsset

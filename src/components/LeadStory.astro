@@ -1,5 +1,5 @@
 ---
-import type { NoteEntry } from '../lib/content.ts';
+import { getFormatNames, getTopicNames, type NoteEntry } from '../lib/content.ts';
 import { formatDate, formatLabel, noteHref } from '../lib/presentation.ts';
 import TopicLink from './TopicLink.astro';
 
@@ -8,6 +8,11 @@ interface Props {
 }
 
 const { note } = Astro.props;
+const topicNames = await getTopicNames();
+const formatNames = await getFormatNames();
+const primaryTopic = note.data.topics[0] ?? '';
+const primaryTopicName = topicNames.get(primaryTopic) ?? formatLabel(primaryTopic);
+const formatName = formatNames.get(note.data.format) ?? formatLabel(note.data.format);
 const titleLength = [...note.data.title].length;
 const headlineSize = titleLength > 72 ? 'editorial-lead__headline--very-long' : titleLength > 48 ? 'editorial-lead__headline--long' : '';
 ---
@@ -26,18 +31,18 @@ const headlineSize = titleLength > 72 ? 'editorial-lead__headline--very-long' : 
     ) : (
       <span class="editorial-poster" aria-hidden="true">
         <strong>01</strong>
-        <span>{formatLabel(note.data.contentType)}</span>
+        <span>{primaryTopicName}</span>
       </span>
     )}
   </a>
   <div class="editorial-lead">
-    <p class="eyebrow">Featured · {formatLabel(note.data.contentType)}</p>
+    <p class="eyebrow">Featured · {primaryTopicName}</p>
     <h1 class={headlineSize}><a href={noteHref(note.id)}>{note.data.title}</a></h1>
     <p class="lead-story__dek">{note.data.description}</p>
     <div class="story-byline">
       <time datetime={note.data.publishedAt.toISOString()}>{formatDate(note.data.publishedAt)}</time>
       <span aria-hidden="true">/</span>
-      <span>{formatLabel(note.data.format)}</span>
+      <span>{formatName}</span>
     </div>
     <div class="editorial-lead__footer">
       <div class="topic-list" aria-label="Topics">

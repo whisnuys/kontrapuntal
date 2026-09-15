@@ -12,7 +12,6 @@ const fixtures: FilterableNote[] = [
     id: 'signal-and-noise',
     title: 'Signal and Noise',
     description: 'An essay about attention and technology.',
-    contentType: 'technology',
     format: 'essay',
     topics: ['technology', 'culture'],
     source: undefined,
@@ -21,40 +20,36 @@ const fixtures: FilterableNote[] = [
     id: 'book-margin',
     title: 'A Note from the Margin',
     description: 'Observations from a book.',
-    contentType: 'book',
-    format: 'reflection',
+    format: 'thought',
     topics: ['books'],
     source: { type: 'book', title: 'A demonstration book' },
   },
 ];
 
 describe('parseNoteFilters', () => {
-  test('normalizes valid query values and discards unsupported enum values', () => {
+  test('normalizes query values and accepts formats added through the CMS', () => {
     const parsed = parseNoteFilters(
-      new URLSearchParams('q=%20ATTENTION%20&type=technology&topic=technology&format=essay'),
+      new URLSearchParams('q=%20ATTENTION%20&topic=technology&format=essay'),
     );
     assert.deepEqual(parsed, {
       q: 'attention',
-      type: 'technology',
       topic: 'technology',
       format: 'essay',
     });
 
-    assert.deepEqual(parseNoteFilters(new URLSearchParams('type=report&format=thread')), {
+    assert.deepEqual(parseNoteFilters(new URLSearchParams('format=thread')), {
       q: '',
-      type: '',
       topic: '',
-      format: '',
+      format: 'thread',
     });
   });
 });
 
 describe('filterNotes', () => {
-  test('uses AND semantics across text, type, topic, and format filters', () => {
+  test('uses AND semantics across text, topic, and format filters', () => {
     assert.deepEqual(
       filterNotes(fixtures, {
         q: 'attention',
-        type: 'technology',
         topic: 'technology',
         format: 'essay',
       }).map(({ id }) => id),
@@ -64,16 +59,15 @@ describe('filterNotes', () => {
     assert.deepEqual(
       filterNotes(fixtures, {
         q: 'attention',
-        type: 'book',
-        topic: '',
-        format: '',
+        topic: 'books',
+        format: 'thought',
       }),
       [],
     );
   });
 
   test('searches title, description, topics, and source case-insensitively', () => {
-    const emptyFacets = { type: '', topic: '', format: '' } as const;
+    const emptyFacets = { topic: '', format: '' } as const;
 
     assert.equal(filterNotes(fixtures, { q: 'MARGIN', ...emptyFacets })[0]?.id, 'book-margin');
     assert.equal(filterNotes(fixtures, { q: 'observations', ...emptyFacets })[0]?.id, 'book-margin');

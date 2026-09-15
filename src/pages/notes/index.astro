@@ -19,13 +19,13 @@ const searchableText = (note: (typeof notes)[number]) =>
     .toLowerCase();
 ---
 
-<BaseLayout title="Notes" description="Browse every published Kontrapuntal note by subject, format, topic, or phrase.">
+<BaseLayout title="Notes" description="Browse every published Kontrapuntal note by format, topic, or phrase.">
   <div data-layout="magazine-index">
       <header class="page-header">
     <p class="eyebrow">The complete index</p>
     <div class="page-header__grid">
       <h1>Notes</h1>
-      <p>Essays, reflections, and quick notes arranged newest first. Filter the index without losing the chronology.</p>
+      <p>Notes arranged newest first. Filter the index without losing the chronology.</p>
     </div>
   </header>
 
@@ -41,7 +41,6 @@ const searchableText = (note: (typeof notes)[number]) =>
         <div
           data-filter-item
           data-search={searchableText(note)}
-          data-type={note.data.contentType}
           data-format={note.data.format}
           data-topics={note.data.topics.join('|')}
         >
@@ -85,7 +84,6 @@ const searchableText = (note: (typeof notes)[number]) =>
       const params = new URLSearchParams();
       for (const [key, value] of data.entries()) params.set(key, String(value));
       const query = (params.get('q') ?? '').trim().toLowerCase();
-      const type = params.get('type') ?? '';
       const topic = params.get('topic') ?? '';
       const format = params.get('format') ?? '';
       let visible = 0;
@@ -94,7 +92,6 @@ const searchableText = (note: (typeof notes)[number]) =>
         const topics = (card.dataset.topics ?? '').split('|');
         const matches =
           (!query || card.dataset.search?.includes(query)) &&
-          (!type || card.dataset.type === type) &&
           (!topic || topics.includes(topic)) &&
           (!format || card.dataset.format === format);
         card.hidden = !matches;
