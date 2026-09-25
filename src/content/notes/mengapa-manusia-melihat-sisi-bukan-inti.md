@@ -7,7 +7,7 @@ description: Bayangkan sepiring gorengan panas yang menggugah selera, hanya
 authors:
   - ali-sofyan-r
 publishedAt: 2026-09-23
-status: draft
+status: published
 format: thought
 topics:
   - society
