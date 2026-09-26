@@ -11,7 +11,7 @@ status: published
 format: thought
 topics:
   - society
-featured: true
+featured: false
 heroImage: https://res.cloudinary.com/c8tgycuw/image/upload/v1789494051/mendoan.jpg
 source:
   type: Source · Book
