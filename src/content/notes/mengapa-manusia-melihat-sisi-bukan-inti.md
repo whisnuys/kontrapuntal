@@ -13,6 +13,7 @@ topics:
   - society
 featured: false
 heroImage: https://res.cloudinary.com/c8tgycuw/image/upload/v1789494051/mendoan.jpg
+heroAlt: mendoan
 source:
   type: Source · Book
   title: Thinking, Fast and Slow
