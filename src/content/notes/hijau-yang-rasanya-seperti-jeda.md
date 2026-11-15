@@ -10,6 +10,7 @@ publishedAt: 2026-11-14
 status: published
 format: essay
 topics:
+  - society
   - culture
 featured: true
 heroImage: https://res.cloudinary.com/c8tgycuw/image/upload/v1794591347/Matcha.jpg
