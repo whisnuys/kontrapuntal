@@ -7,11 +7,11 @@ description: Ada kesenangan sederhana dalam menikmati segelas matcha. Warna
 authors:
   - fadhina-aqfa-nisa
 publishedAt: 2026-11-14
-status: draft
+status: published
 format: essay
 topics:
   - culture
-featured: false
+featured: true
 heroImage: https://res.cloudinary.com/c8tgycuw/image/upload/v1794591347/Matcha.jpg
 heroAlt: Jeda di Permukaan Hijau
 ---
