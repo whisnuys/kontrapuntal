@@ -12,7 +12,7 @@ format: essay
 topics:
   - society
   - culture
-featured: true
+featured: false
 heroImage: https://res.cloudinary.com/c8tgycuw/image/upload/v1794591347/Matcha.jpg
 heroAlt: Jeda di Permukaan Hijau
 ---
